@@ -1,0 +1,3 @@
+fastafiles input must be in 0_trimmed in format *_R1_paired.fastq
+first input -i : folder name
+

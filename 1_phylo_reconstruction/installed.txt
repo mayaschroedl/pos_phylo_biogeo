@@ -1,0 +1,11 @@
+trimming:
+trimmomatic
+fastqc
+
+covmaps:
+bwa
+samtools
+
+put:
+hybpiper + dependencies into program folder
+
