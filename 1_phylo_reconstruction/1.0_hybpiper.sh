@@ -23,12 +23,12 @@ TARGET_FILE=$WD/renamed_reads/target_file.fasta
 
 
 #make a new directories
-mkdir -p $WD/1_hybpiper/
+mkdir -p $WD/1.0_hybpiper/
 
-mkdir -p $WD/1_hybpiper/mapped #mapped reads
-mkdir -p $WD/1_hybpiper/contigs_exon #exon contigs
-mkdir -p $WD/1_hybpiper/contigs_intron #intron contigs
-mkdir -p $WD/1_hybpiper/supercontigs #supercontigs
+mkdir -p $WD/1.0_hybpiper/mapped #mapped reads
+mkdir -p $WD/1.0_hybpiper/contigs_exon #exon contigs
+mkdir -p $WD/1.0_hybpiper/contigs_intron #intron contigs
+mkdir -p $WD/1.0_hybpiper/supercontigs #supercontigs
 
 
 ##########################
@@ -58,7 +58,7 @@ for f in *"_R1_paired_trimmed.fastq"; do (echo ${f/"_R1_paired_trimmed.fastq"}>>
 ##################
 
 ####execute hybpiper####
-cd $WD/1_hybpiper #results will be stored here
+cd $WD/1.0_hybpiper #results will be stored here
 
 #map reads to target file
 while read name; #for each TAG, execute hybpiper with default settings
@@ -67,10 +67,10 @@ do python2 $GWD/programs/HybPiper/reads_first.py -b $TARGET_FILE -r $WD/0_trimme
 done < $WD/namelist.txt
 
 #get sequence lengths
-python2 $GWD/programs/HybPiper/get_seq_lengths.py $TARGET_FILE $WD/namelist.txt dna > $WD/1_hybpiper/seq_lengths.txt
+python2 $GWD/programs/HybPiper/get_seq_lengths.py $TARGET_FILE $WD/namelist.txt dna > $WD/1.0_hybpiper/seq_lengths.txt
 
 #get statistics
-python2 $GWD/programs/HybPiper/hybpiper_stats.py $WD/1_hybpiper/seq_lengths.txt $WD/namelist.txt > $WD/1_hybpiper/stats.txt
+python2 $GWD/programs/HybPiper/hybpiper_stats.py $WD/1.0_hybpiper/seq_lengths.txt $WD/namelist.txt > $WD/1.0_hybpiper/stats.txt
 
 
 #----EXONS----#
@@ -80,10 +80,10 @@ python2 $GWD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . dna
 
 
 #move exon contigs to separate folder
-mv *.FNA $WD/1_hybpiper/contigs_exon
+mv *.FNA $WD/1.0_hybpiper/contigs_exon
 
 #rename
-cd $WD/1_hybpiper/contigs_exon
+cd $WD/1.0_hybpiper/contigs_exon
 for f in *.FNA; do mv $f ${f/.FNA}_contig.fasta; done
 
 
@@ -91,35 +91,35 @@ for f in *.FNA; do mv $f ${f/.FNA}_contig.fasta; done
 #"introns" = non-coding sequences
 #supercontigs = exons + "introns"
 
-cd $WD/1_hybpiper/
+cd $WD/1.0_hybpiper/
 
 #intronerate to detect introns
 while read name; #for each TAG, intronerate and output to mapped/$name
-do python2 $GWD/programs/HybPiper/intronerate.py --prefix $WD/1_hybpiper/$name;
+do python2 $GWD/programs/HybPiper/intronerate.py --prefix $WD/1.0_hybpiper/$name;
 done < $WD/namelist.txt
 
 # #retrieve introns
 python2 $GWD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . intron
 
 #move intron contigs to separate folder
-mv *_introns.fasta $WD/1_hybpiper/contigs_intron
+mv *_introns.fasta $WD/1.0_hybpiper/contigs_intron
 
 
 
 #----SUPERCONTIGS----#
-cd $WD/1_hybpiper/
+cd $WD/1.0_hybpiper/
 
 #retrieve supercontigs
 python2 $GWD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . supercontig
 
 #move supercontigs to separate folder
-mv *_supercontig.fasta $WD/1_hybpiper/supercontigs;
+mv *_supercontig.fasta $WD/1.0_hybpiper/supercontigs;
 
 #-----------------------
 #-----------------------
 
 #---cleanup---#
-mv TAG* $WD/1_hybpiper/mapped
+mv TAG* $WD/1.0_hybpiper/mapped
 
 cd $WD
 

@@ -35,7 +35,7 @@ seq.len=seq.len[,!(names(seq.len)=="Species")]#remove species column
 ref.len=ref.len[,!(names(ref.len)=="Species")]#remove species column
 
 #calculate percentage of seq recovered for each seq in each TAG
-percent.len = sweep(seq.len, 2, ref.len, "/")
+percent.len = sweep(seq.len, 2, unlist(ref.len), "/")
 percent.len.75=percent.len
 
 #if percentage gene length recovered is >= 75% make value 1
@@ -49,7 +49,7 @@ percent.len.75[percent.len<0.75] = 0
 #calculate % TAGs with >= 75% of seq.len recovered for each gene
 col = colSums(percent.len.75 != 0) / nrow(seq.len)
 
-table(col>=0.75)
+#table(col>=0.75)
 
 
 # Extract 75_75 genes -----------------------------------------------------
@@ -60,11 +60,11 @@ length7575<-seq.len[,col>=0.75]
 #Get a list of names of 75_75 genes
 yes75_75<-names(length7575[1,])
 
-write.table(yes75_75,file.path(wd,"1.0_hybpiper",paste0("genelist_7575.txt")),quote=F,row.names=F,col.names=F)
+write.table(yes75_75,file.path(wd,paste0("genelist_7575.txt")),quote=F,row.names=F,col.names=F)
 
 
-#calculate percentage of genes having >75% reconstructed
-r = rowSums(percent.len.75 != 0) / ncol(seq.len)
-TAG_length7575=cbind(species,r)
+##calculate percentage of genes having >75% reconstructed
+#r = rowSums(percent.len.75 != 0) / ncol(seq.len)
+#TAG_length7575=cbind(as.character(species),r)
 
-TAG_length7575
+#TAG_length7575

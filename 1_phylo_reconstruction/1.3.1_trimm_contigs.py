@@ -26,7 +26,7 @@ WD=os.getcwd()
 
 t=sys.argv[1] #threshold
 
-genelist=pandas.read_csv(WD+"/1_hybpiper/genelist_7575.txt", names=["gene"])#read genelist containing the filtered genes with the script
+genelist=pandas.read_csv(WD+"/genelist_7575.txt", names=["gene"])#read genelist containing the filtered genes with the script
 
 if not os.path.exists(WD+"/1.1_coverage_maps/trimmed_contigs/"+str(t)+"/contigs"):
     shutil.copytree(WD+"/1_hybpiper/supercontigs" #contigs for each gene

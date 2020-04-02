@@ -58,12 +58,12 @@ rm -rf $WD/2_alignment/$dir_value$* #if directory not empty: clear directory
 ##########################
 
 #remove carriage return in genelist_7575_X.txt:
-sed -i 's/\r$//g' $WD/1_hybpiper/genelist_7575.txt
+sed -i 's/\r$//g' $WD/genelist_7575.txt
 
 #combine contigs into one file
 while read gene; do
 cat $FILES/"$gene"_supercontig.fasta >> $WD/2_alignment/$dir_value$gene"_combined.fasta"
-done < $WD/1_hybpiper/genelist_7575.txt
+done < $WD/genelist_7575.txt
 
 ###################
 #----ALIGNMENT----#
@@ -72,12 +72,12 @@ done < $WD/1_hybpiper/genelist_7575.txt
 #### MAFFT ####
 while read gene;
 do mafft --auto $WD/2_alignment/$dir_value$$gene"_combined.fasta" > $WD/2_alignment/$dir_value$$gene"_aligned.fasta";
-done < $WD/1_hybpiper/genelist_7575.txt
+done < $WD/genelist_7575.txt
 
 #### GBLOCKS ####
 while read gene;
 do $WD/programs/Gblocks_0.91b/Gblocks $WD/2_alignment/$dir_value$$gene"_aligned.fasta" -t=d -b5="a"; 
- done < $WD/1_hybpiper/genelist_7575.txt
+ done < $WD/genelist_7575.txt
 #b5=a: all gap positions allowed
 
 #alignments were manually corrected because some sequences were misaligned.
