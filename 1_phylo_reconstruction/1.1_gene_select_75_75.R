@@ -19,9 +19,8 @@ if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
 # wd & arguments --------------------------------------------------------------
 wd=file.path(getwd(),"1_phylo_reconstruction")
-args = commandArgs(trailingOnly=TRUE)
 
-seq.ref.len=read.table(file.path(wd,"1_hybpiper","seq_lengths.txt")
+seq.ref.len=read.table(file.path(wd,"1.0_hybpiper","seq_lengths.txt")
                   ,header=T,sep="\t")
 
 #first line is the reference length (length of the gene in the target file)
@@ -33,6 +32,7 @@ seq.len=seq.ref.len[-1,]
 species=seq.len$Species #extract species (TAG) names
 
 seq.len=seq.len[,!(names(seq.len)=="Species")]#remove species column
+ref.len=ref.len[,!(names(ref.len)=="Species")]#remove species column
 
 #calculate percentage of seq recovered for each seq in each TAG
 percent.len = sweep(seq.len, 2, ref.len, "/")
@@ -60,7 +60,7 @@ length7575<-seq.len[,col>=0.75]
 #Get a list of names of 75_75 genes
 yes75_75<-names(length7575[1,])
 
-write.table(yes75_75,file.path(wd,"1_hybpiper",paste0("genelist_7575.txt")),quote=F,row.names=F,col.names=F)
+write.table(yes75_75,file.path(wd,"1.0_hybpiper",paste0("genelist_7575.txt")),quote=F,row.names=F,col.names=F)
 
 
 #calculate percentage of genes having >75% reconstructed

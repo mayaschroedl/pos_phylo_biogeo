@@ -24,3 +24,5 @@ enter wd? of trimmed vs of untrimmed
 need to have installed:
 - python 2
 -ete3 for phypart
+
+for chaning tiplabels use:

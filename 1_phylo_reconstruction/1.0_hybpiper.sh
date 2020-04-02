@@ -67,7 +67,7 @@ do python2 $GWD/programs/HybPiper/reads_first.py -b $TARGET_FILE -r $WD/0_trimme
 done < $WD/namelist.txt
 
 #get sequence lengths
-python2 $GWD/programs/HybPiper/get_seq_lengths.py $TARGET_FILE $WD/namelist.txt dna > seq_lengths.txt
+python2 $GWD/programs/HybPiper/get_seq_lengths.py $TARGET_FILE $WD/namelist.txt dna > $WD/1_hybpiper/seq_lengths.txt
 
 #get statistics
 python2 $GWD/programs/HybPiper/hybpiper_stats.py $WD/1_hybpiper/seq_lengths.txt $WD/namelist.txt > $WD/1_hybpiper/stats.txt
@@ -78,10 +78,6 @@ python2 $GWD/programs/HybPiper/hybpiper_stats.py $WD/1_hybpiper/seq_lengths.txt 
 #get exon contigs
 python2 $GWD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . dna
 
-#-cleanup-#
-
-
-mv TAG* $WD/1_hybpiper/mapped
 
 #move exon contigs to separate folder
 mv *.FNA $WD/1_hybpiper/contigs_exon
@@ -95,32 +91,35 @@ for f in *.FNA; do mv $f ${f/.FNA}_contig.fasta; done
 #"introns" = non-coding sequences
 #supercontigs = exons + "introns"
 
-cd $WD/1_hybpiper/mapped
+cd $WD/1_hybpiper/
 
 #intronerate to detect introns
 while read name; #for each TAG, intronerate and output to mapped/$name
-do python2 $GWD/programs/HybPiper/intronerate.py --prefix $WD/1_hybpiper/mapped/$name;
+do python2 $GWD/programs/HybPiper/intronerate.py --prefix $WD/1_hybpiper/$name;
 done < $WD/namelist.txt
 
-# cd $WD/1_hybpiper/mapped
-
 # #retrieve introns
-# python2 $GWD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . intron
+python2 $GWD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . intron
 
 #move intron contigs to separate folder
-# mv *_introns.fasta $WD/1_hybpiper/contigs_intron
+mv *_introns.fasta $WD/1_hybpiper/contigs_intron
+
+
 
 #----SUPERCONTIGS----#
-# cd $WD/1_hybpiper/mapped
+cd $WD/1_hybpiper/
 
 #retrieve supercontigs
-python2 $WD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . supercontig
+python2 $GWD/programs/HybPiper/retrieve_sequences.py $TARGET_FILE . supercontig
 
 #move supercontigs to separate folder
 mv *_supercontig.fasta $WD/1_hybpiper/supercontigs;
 
 #-----------------------
 #-----------------------
+
+#---cleanup---#
+mv TAG* $WD/1_hybpiper/mapped
 
 cd $WD
 

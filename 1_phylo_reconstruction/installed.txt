@@ -9,3 +9,16 @@ samtools
 put:
 hybpiper + dependencies into program folder
 
+align:
+- mafft
+- gblocks
+
+
+genetree:
+-raxml-ng
+
+astral:
+
+piecharts:
+
+

@@ -58,7 +58,7 @@ java -jar $WD/programs/Astral/astral.5.6.3.jar -t 1 -i $WD/3_gene_trees/"$dir_va
 
 
 #bootstrap
-#java -jar $WD/programs/Astral/astral.5.6.3.jar -t 1 -i $WD/3_gene_trees/"$FILENAMES$t"/raxml_parsimony_"$FILENAMES$t"_gene.tre -b bs-files -o "$FILENAMES$t"_coalescent.tre 2>"$FILENAMES$t"_coalescent.log  -a $WD/4_coalescent_trees/"$FILENAMES$t"/$DOUBLESP 
+#java -jar $WD/programs/Astral/astral.5.6.3.jar -t 1 -i $WD/3_gene_trees/"$dir_value"raxml_parsimony_gene.tre -b bs-files -o "$FILENAMES$t"_coalescent.tre 2>"$FILENAMES$t"_coalescent.log  -a $WD/4_coalescent_trees/"$FILENAMES$t"/$DOUBLESP 
 #make bs-files
 
 #new astral tree, where individuals are treated differently
