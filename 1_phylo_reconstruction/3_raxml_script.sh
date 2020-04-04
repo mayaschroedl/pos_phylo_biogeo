@@ -29,13 +29,13 @@ while getopts ":t:" opt; do
 
 done
 
-###################################
-#----DIRECTORIES AND VARIABLES----#
-###################################
+#################################
+#----DIRECTORIES & VARIABLES----#
+#################################
 
 #working directories
 GWD=$PWD #global working directory, with subprojects and scripts
-WD="$PWD"/1_phylo_reconstruction #current working directory
+WD="$GWD"/1_phylo_reconstruction #current working directory
 
 if ! [ -z "$t" ]; #if there is a threshold definded, then work in the threshold directory
 then
@@ -44,6 +44,16 @@ fi
 
 #make directory
 mkdir -p $WD/3_gene_trees/$dir_value
+mkdir -p $WD/3_gene_trees/"$dir_value"1_ML #store best maximum likelihood trees
+mkdir -p $WD/3_gene_trees/"$dir_value"2_bootstrap #store bootstrap trees
+mkdir -p $WD/3_gene_trees/"$dir_value"3_support #store support trees
+mkdir -p $WD/3_gene_trees/"$dir_value"4_collapsed #store support trees with collapsed branches
+
+rm $WD/3_gene_trees/"$dir_value"1_ML/*
+rm $WD/3_gene_trees/"$dir_value"2_bootstrap/*
+rm $WD/3_gene_trees/"$dir_value"3_support/*
+rm $WD/3_gene_trees/"$dir_value"4_collapsed/*
+
 
 #########################
 #----MAKE GENE TREES----#
@@ -51,26 +61,24 @@ mkdir -p $WD/3_gene_trees/$dir_value
 # with GTRGAMMA model
 
 cd $WD/3_gene_trees/$dir_value
-rm *
-# while read gene; 
-# do raxml -s $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta -m GTRGAMMA -n "$gene"_gene.tre -p 12345;
-# done < $WD/1_hybpiper/genelist_7575.txt
 
-#combine all raxml genetrees in one file
-# cat $WD/3_gene_trees/"$dir_value"RAxML_parsi* > $WD/3_gene_trees/"$dir_value"RAxML_combined_gene.tre
 
-# #raxml-ng + bootstrap
+# #rax1_ML-ng + bootstrap
 while read gene;
- do raxml-ng --check --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTRGAMMA; 
- do raxml-ng --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTRGAMMA --seed 2;
- do raxml-ng --bootstrap --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTRGAMMA --seed 2 --bs-trees 200;
-done < $WD/1_hybpiper/genelist_7575.txt
+ do rax1_ML-ng --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTR+G --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"1_ML/"$gene" #built best maximum likelihood trees
+ rax1_ML-ng --bootstrap --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTR+G --seed 2 --bs-trees 200 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene"
+ rax1_ML-ng --support --tree $WD/3_gene_trees/"$dir_value"1_ML/"$gene".rax1_ML.bestTree --bs-trees $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene".rax1_ML.bootstraps --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"3_support/"$gene"
+done < $WD/genelist_7575.txt
 
-#check output
-#collapse all branches with bootstrap <10
-#module load bioinfo/newick-utils/1.6
-#$WD/3_gene_trees/"$FILENAMES$t"/raxml_parsimony_"$FILENAMES$t"_gene.tre 'i & b<=10' o > $WD/3_gene_trees/"$FILENAMES$t"/raxml_parsimony_"$FILENAMES$t"_gene_bs10.tre 
+#reorganize if necessary
 
+#collapse all branches with bootstrap <10 #with newick utilities
+while read gene;
+do nw_ed $WD/3_gene_trees/"$dir_value"3_support/"$gene".raxml.support 'i & (b<=10)' o > $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene".raxml.support.coll;
+done < $WD/genelist_7575.txt
+
+#combine all RAxML genetrees with support into one file for later use in astral
+cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll > $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll
 
 cd $WD
 

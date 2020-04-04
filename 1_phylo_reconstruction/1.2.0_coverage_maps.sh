@@ -17,7 +17,7 @@
 
 #working directories
 GWD=$PWD #global working directory, with subprojects and scripts
-WD="$PWD"/1_phylo_reconstruction #current working directory
+WD="$GWD"/1_phylo_reconstruction #current working directory
 
 mkdir -p $WD/1.0_hybpiper/supercontigs_reorga #here we're going to store the supercontigs which are reorganized into TAGs
 mkdir -p $WD/1.1_coverage_maps/ #coverage maps are going to be stored here
@@ -50,6 +50,7 @@ done < $WD/namelist.txt #namelist = list of all TAGs
 
 #-cleanup-#
 cd $WD/1.0_hybpiper/supercontigs_reorga
+shopt -s extglob # is needed for the next line to work
 rm !("TAG"*"_supercontigs.fasta") #remove all files except the combined supercontigs files
 
 ###################################

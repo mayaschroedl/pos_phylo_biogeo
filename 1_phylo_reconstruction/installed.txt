@@ -6,6 +6,11 @@ covmaps:
 bwa
 samtools
 
+trimm: PYTHON
+Bio
+pyfaidx
+shutil
+
 put:
 hybpiper + dependencies into program folder
 
@@ -16,9 +21,15 @@ align:
 
 genetree:
 -raxml-ng
+-newick utilities
 
 astral:
+-newick utilities
 
 piecharts:
+ete3
+
+hashrf:
+-hashrf
 
 

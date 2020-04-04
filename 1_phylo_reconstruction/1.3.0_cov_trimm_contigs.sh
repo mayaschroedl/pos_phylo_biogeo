@@ -45,18 +45,42 @@ while getopts ":t:" opt; do
 
 #working directories
 GWD=$PWD #global working directory, with subprojects and scripts
-WD="$PWD"/1_phylo_reconstruction #current working directory
+WD="$GWD"/1_phylo_reconstruction #current working directory
 
-mkdir -p $WD/1.1_coverage_maps/trimmed_contigs/$t
+mkdir -p $WD/1.1_coverage_maps/per_gene
+mkdir -p $WD/1.1_coverage_maps/trimmed_contigs/$t/contigs
+
+#copy supercontigs to mkdir -p $WD/1.1_coverage_maps/trimmed_contigs/$t/contigs
+rm $WD/1.1_coverage_maps/trimmed_contigs/$t/contigs/*
+while read gene;
+do cp $WD/1.0_hybpiper/supercontigs/$gene* $WD/1.1_coverage_maps/trimmed_contigs/$t/contigs
+done < $WD/genelist_7575.txt
+
+cd $WD/1.1_coverage_maps/trimmed_contigs/$t/contigs
+#rename header of each  file (*$gene.fasta) from TAGX-geneX to TAGX
+for file in *.fasta; do sed -i 's/-[^-]*//2g' $file; done #
+
+
+##########################
+#----FILE PREPARATION----#
+##########################
+#----PROBLEM----#
+#We generated coverage maps per TAG. But we want the trimmed conitgs organized in genes. 
+#----SOLUTION---#
+#--> we have to reorganize the coverage maps per gene
+
+cd $WD
+python $GWD/scripts/1_phylo_reconstruction/1.3.1_reorga_coverage_to_genes.py $t #t=threshold;
+
 
 ###############
 #----TRIMM----#
 ###############
 
-rm -rf $WD/1.1_coverage_maps/trimmed_contigs/$t/* #if already exists: remove
-
 cd $WD
-python $GWD/scripts/1.2.1_trimm_contigs.py $t #t=threshold;
+python $GWD/scripts/1_phylo_reconstruction/1.3.2_cov_trimm_contigs.py $t #t=threshold;
 
 rm -r $WD/1.1_coverage_maps/trimmed_contigs/$t/contigs
+
+cd $WD
 

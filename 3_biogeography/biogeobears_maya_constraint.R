@@ -75,8 +75,8 @@ BioGeoBEARS_run_object$num_cores_to_use = 1
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # Set up a time-stratified analysis:
-BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
-BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
+BioGeoBEARS_run_object$timesfn = "timeperiods_Federmann.txt"
+BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers_Federmann.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
 #BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
@@ -116,18 +116,18 @@ check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 # For a slow analysis, run once, then set runslow=FALSE to just 
 # load the saved result.
 runslow = TRUE
-resfn = paste0(name,"_DEC_",cons,".Rdata")
+resfn = file.path(wd,paste0("DF_DEC.Rdata"))
 if (runslow)
 {
   res = bears_optim_run(BioGeoBEARS_run_object)
   res    
   
   save(res, file=resfn)
-  resDEC = res
+  resDEC_DF = res
 } else {
   # Loads to "res"
   load(resfn)
-  resDEC = res
+  resDEC_DF = res
 }
 
 
@@ -152,8 +152,8 @@ BioGeoBEARS_run_object$num_cores_to_use = 1
 BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathology & isn't much faster at this scale
 
 # Set up a time-stratified analysis:
-BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
-BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
+BioGeoBEARS_run_object$timesfn = "timeperiods_Federmann.txt"
+BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers_Federmann.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
 #BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
@@ -199,18 +199,18 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01v","est"] = 0.
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 runslow = TRUE
-resfn = paste0(name,"_DIVALIKE_",cons,".Rdata")
+resfn = file.path(wd,paste0("DF_DIVALIKE.Rdata"))
 if (runslow)
 {
   res = bears_optim_run(BioGeoBEARS_run_object)
   res    
   
   save(res, file=resfn)
-  resDIVALIKE = res
+  resDIVALIKE_DF = res
 } else {
   # Loads to "res"
   load(resfn)
-  resDIVALIKE = res
+  resDIVALIKE_DF = res
 }
 
 
@@ -240,8 +240,8 @@ BioGeoBEARS_run_object$force_sparse = FALSE    # force_sparse=TRUE causes pathol
 
 
 # Set up a time-stratified analysis:
-BioGeoBEARS_run_object$timesfn = "timeperiods.txt"
-BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers.txt"
+BioGeoBEARS_run_object$timesfn = "timeperiods_Federmann.txt"
+BioGeoBEARS_run_object$dispersal_multipliers_fn = "manual_dispersal_multipliers_Federmann.txt"
 #BioGeoBEARS_run_object$areas_allowed_fn = "areas_allowed.txt"
 #BioGeoBEARS_run_object$areas_adjacency_fn = "areas_adjacency.txt"
 #BioGeoBEARS_run_object$distsfn = "distances_matrix.txt"
@@ -293,18 +293,18 @@ BioGeoBEARS_run_object$BioGeoBEARS_model_object@params_table["mx01y","est"] = 0.
 check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 
 runslow = TRUE
-resfn = paste0(name,"_BAYAREALIKE_",cons,".Rdata")
+resfn = file.path(wd,paste0("DF_BAYAREALIKE.Rdata"))
 if (runslow)
 {
   res = bears_optim_run(BioGeoBEARS_run_object)
   res    
   
   save(res, file=resfn)
-  resBAYAREALIKE = res
+  resBAYAREALIKE_DF = res
 } else {
   # Loads to "res"
   load(resfn)
-  resBAYAREALIKE = res
+  resBAYAREALIKE_DF = res
 }
 
 ###PLOT##

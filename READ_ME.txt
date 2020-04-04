@@ -18,6 +18,7 @@ make sure that:
 -target file there
 
 
+RUN SCRIPTS ALWAYS FROM MAIN WORKING DIRECTORY (PROJECT FILE)
 
 enter wd? of trimmed vs of untrimmed
 

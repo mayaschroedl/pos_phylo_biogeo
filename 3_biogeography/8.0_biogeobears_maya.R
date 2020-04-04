@@ -1,4 +1,4 @@
-# inspired by script biogeobears by Nicholas J. Matzke
+# modified script biogeobears by Nicholas J. Matzke
 rm(list=ls())
 library(GenSA)    # GenSA is better than optimx (although somewhat slower)
 library(FD)       # for FD::maxent() (make sure this is up-to-date)
