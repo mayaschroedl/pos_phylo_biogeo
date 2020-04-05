@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-####################
+###########################################################################
 # Project: Orania Phylogeny MT
 # Script: biogeobears.R
 # --- Action: 
@@ -8,7 +8,7 @@
 # Author: Maya Schroedl. Script inspired by BioGeoBears example script by
 # ------- Nicholas J. Matzke
 # Date: 11/2019
-####################
+###########################################################################
 
 rm(list=ls())
 
@@ -24,6 +24,7 @@ lapply(pkg_list, pkg_install)
 # Working directory -------------------------------------------------------
 wd=file.path(getwd(),"3_biogeography","biogeobears")
 
+extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))#extra directory
 
 # General setup -----------------------------------------------------------
 #### Tree file
@@ -818,20 +819,54 @@ restable=rbind(res.dec_M0,res.dl_M0,res.b_M0,res.dec_DB,res.dl_DB,res.b_DB,res.d
 row.names(restable) = c("dec_M0", "dl_M0", "b_M0","dec_DB","dl_DB","b_DB","dec_DF","dl_DF","b_DF")
 restable
 
-###
-restable2 = restable
-
-# With AICs:
-AICtable = calc_AIC_column(LnL_vals=restable$LnL, nparam_vals=restable$numparams)
-restable = cbind(restable, AICtable)
-restable_AIC_rellike = AkaikeWeights_on_summary_table(restable=restable, colname_to_use="AIC")
-restable_AIC_rellike = put_jcol_after_ecol(restable_AIC_rellike)
-restable_AIC_rellike
 
 # With AICcs -- factors in sample size
 samplesize = length(tr$tip.label)
 AICtable = calc_AICc_column(LnL_vals=restable$LnL, nparam_vals=restable$numparams, samplesize=samplesize)
-restable2 = cbind(restable2, AICtable)
+restable2 = cbind(restable, AICtable)
 restable_AICc_rellike = AkaikeWeights_on_summary_table(restable=restable2, colname_to_use="AICc")
 restable_AICc_rellike = put_jcol_after_ecol(restable_AICc_rellike)
 restable_AICc_rellike
+
+
+# Plot best model ---------------------------------------------------------
+
+analysis_titletxt =paste0("BioGeoBEARS DIVALIKE M0") #choose here the model that had the lowest AICc
+# SETUP ----
+results_object = resDIVALIKE
+scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
+
+### Colours ----
+areas=c("A","S","M")
+states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=TRUE)
+
+# Make the list of ranges
+ranges_list = NULL
+for (i in 1:length(states_list_0based))
+{    
+  if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )
+  {
+    tmprange = "_"
+  } else {
+    tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")
+  }
+  ranges_list = c(ranges_list, tmprange)
+}
+
+
+ranges_list
+
+#make color list for ranges (=states)
+colors_list_for_states=c("white","khaki1","lightskyblue","firebrick3","sienna1","darkolivegreen1","mediumpurple3")
+
+dev.off()
+pdf(file.path(wd, "BioGeoBEARS_DIVALIKE_M0.pdf"))#save plots #rename accordingly to model chosen
+
+# States
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges, colors_list_for_states=colors_list_for_states)
+
+# Pie chart
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges, colors_list_for_states=colors_list_for_states)
+
+dev.off()
+

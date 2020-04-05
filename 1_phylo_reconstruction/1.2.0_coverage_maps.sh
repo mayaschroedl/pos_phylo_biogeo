@@ -22,6 +22,9 @@ WD="$GWD"/1_phylo_reconstruction #current working directory
 mkdir -p $WD/1.0_hybpiper/supercontigs_reorga #here we're going to store the supercontigs which are reorganized into TAGs
 mkdir -p $WD/1.1_coverage_maps/ #coverage maps are going to be stored here
 
+rm $WD/1.0_hybpiper/supercontigs_reorga/*
+rm $WD/1.1_coverage_maps/*
+
 ##########################
 #----FILE PREPARATION----#
 ##########################
@@ -34,7 +37,6 @@ mkdir -p $WD/1.1_coverage_maps/ #coverage maps are going to be stored here
 
 cd $WD/1.0_hybpiper/supercontigs_reorga
 
-rm *
 
 while read gene; #for each gene
     #split each multifastafile into one single fasta file [TAGX,geneX]
