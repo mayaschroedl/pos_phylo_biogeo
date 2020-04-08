@@ -71,10 +71,9 @@ java -jar $GWD/programs/Astral/astral.5.6.3.jar -t 1 -i $WD/3_gene_trees/"$dir_v
 #----REROOT TREES----#
 nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_rooted.tree | nw_topology -
 
-nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_qs.tree | nw_topology -
+nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_qs_rooted.tree | nw_topology -
 
 #nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_bstrp.tree | nw_topology -
 
 
-
-cd $WD
+cd $GWD

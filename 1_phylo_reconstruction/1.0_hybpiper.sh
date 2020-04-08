@@ -121,5 +121,5 @@ mv *_supercontig.fasta $WD/1.0_hybpiper/supercontigs;
 #---cleanup---#
 mv TAG* $WD/1.0_hybpiper/mapped
 
-cd $WD
+cd $GWD
 

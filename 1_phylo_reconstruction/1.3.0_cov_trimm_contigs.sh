@@ -82,5 +82,5 @@ python $GWD/scripts/1_phylo_reconstruction/1.3.2_cov_trimm_contigs.py $t #t=thre
 
 rm -r $WD/1.1_coverage_maps/trimmed_contigs/$t/contigs
 
-cd $WD
+cd $GWD
 

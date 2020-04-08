@@ -303,7 +303,7 @@ plot_BioGeoBEARS_results(results_object, analysis_titletxt, addl_params=list("j"
 #######################################################
 # Plot ancestral states - DIVALIKE
 #######################################################
-analysis_titletxt =paste0("BioGeoBEARS DIVALIKE on", name, cons)
+analysis_titletxt = paste0("BioGeoBEARS DIVALIKE on", name, cons)
 
 # Setup
 results_object = resDIVALIKE

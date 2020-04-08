@@ -68,8 +68,8 @@ for f in *.fasta; do bwa index $f; done
 #map reads (.fastq) with bwa to supercontigs (*_supercontigs.fasta)
 #map paired reads and unpaired reads (if there are) independently. we will merge them later
 while read name; 
-	do bwa mem -t 32 $WD/1.0_hybpiper/supercontigs_reorga/"$name"_supercontigs.fasta $WD/0_trimmed/"$name"_R1_paired_trimmed.fastq $WD/0_trimmed/"$name"_R2_paired_trimmed.fastq > $WD/1.1_coverage_maps/"$name"_supercontigs_BWA.sam; 
-	if [ -f $WD/0_trimmed/"$name"_unpaired_trimmed.fastq ]; then bwa mem -t 32 $WD/1.0_hybpiper/supercontigs_reorga/"$name"_supercontigs.fasta $WD/0_trimmed/"$name"_unpaired_trimmed.fastq > $WD/1.1_coverage_maps/"$name"_unpaired_supercontigs_BWA.sam; fi
+	do bwa mem $WD/1.0_hybpiper/supercontigs_reorga/"$name"_supercontigs.fasta $WD/0_trimmed/"$name"_R1_paired_trimmed.fastq $WD/0_trimmed/"$name"_R2_paired_trimmed.fastq > $WD/1.1_coverage_maps/"$name"_supercontigs_BWA.sam; 
+	if [ -f $WD/0_trimmed/"$name"_unpaired_trimmed.fastq ]; then bwa mem $WD/1.0_hybpiper/supercontigs_reorga/"$name"_supercontigs.fasta $WD/0_trimmed/"$name"_unpaired_trimmed.fastq > $WD/1.1_coverage_maps/"$name"_unpaired_supercontigs_BWA.sam; fi
 done < $WD/namelist.txt
 
 #convert sam to bam
@@ -79,7 +79,7 @@ for f in *BWA.sam; do (samtools view -b $f -o ${f/.sam}.bam); done
 #merge upaired and paired .bam files
 while read name; 
 do if [ -f $WD/1.1_coverage_maps/"$name"_unpaired_supercontigs_BWA.bam ]; 
-then samtools merge $WD/1.1_coverage_maps/"$name"_supercontigs_BWA.sam $WD/1.1_coverage_maps/"$name"_supercontigs_BWA.sam $WD/1.1_coverage_maps/"$name"_unpaired_supercontigs_BWA.sam;
+then samtools merge $WD/1.1_coverage_maps/"$name"_supercontigs_BWA.sam $WD/1.1_coverage_maps/"$name"_supercontigs_BWA.sam $WD/1.1_coverage_maps/"$name"_unpaired_supercontigs_BWA.sam -f;
 fi;
 done < $WD/namelist.txt
 # samtools merge output input1(paired) input2(unpaired)
@@ -105,4 +105,4 @@ rm *.bam
 #-----------------------
 #-----------------------
 
-cd $WD
+cd $GWD

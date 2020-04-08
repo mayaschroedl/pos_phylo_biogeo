@@ -1,0 +1,102 @@
+#!/usr/bin/env Rscript
+###########################################################################
+# Project: Orania Phylogeny MT
+# Script: oneway_gene_select_function.R
+# --- Action: Compares gene trees to Astral tree (one direction) in order to 
+# ------------ select the genes that are the most similar to the Astral tree
+# ------------ and the most informative (BS > 70%)
+# --- Input: species tree, folder with individual rooted gene trees (with outgroup!)
+# --- Output: 
+# Author: Maya Schroedl
+# Date: 11/2019
+###########################################################################
+
+rm(list = ls()) #clear environment
+
+addTaskCallback(function(...){set.seed(42);TRUE}) #set seed to 42 for whole doc
+
+# Libraries ---------------------------------------------------------------
+if (!require('ape')) install.packages('ape'); library('ape')
+if (!require('phylotools')) install.packages('phylotools'); library('phylotools')
+
+# Function ----------------------------------------------------------------
+
+gtree_sptree_distance=function(genetree, gene_name, sptree, output)
+{
+  
+  ### Prepare data and dataframes ----
+  
+  #--- Get node numbers
+  genetree$node.nums = seq(min(genetree$edge[,1]),max(genetree$edge[,1]))# extract sequence of node numbers
+  genetree$node.label # bootstrap values for each node
+  
+  # dataframe that summarizes node numbers + support values (node.label)
+  nodes_df = data.frame(node.nums = genetree$node.nums, node.label = genetree$node.label)
+  
+  # do not take into consideration the nodes that have no bootstrap value (outgroup)
+    no_support_num =   which(nodes_df$node.label == "")
+    no_support = length(no_support_num) # how many nodes do not have bootstrap value
+    nodes_df = nodes_df[-no_support_num,]
+  
+    # correct node numbers and node labels in gene tree
+    genetree$node.nums = nodes_df$node.nums
+    genetree$node.label = nodes_df$node.label
+  
+  #--- Weight relative percentages with polytomies
+  
+  # Get "theoretical number of nodes (without polytomies)
+  node_num_theo = multi2di(genetree)$Nnode - no_support # resolve randomly polytomies and get the number of theoretical nodes (excluding the nodes without support)
+  
+  # Node dataframe with weighted polytomies (node with polytomy counts x2 (for trichotomy), x3 etc.) to calculate percentage
+  polyt=as.data.frame(table(genetree$edge[,1])-1)[-no_support_num,] # df of which nodes present a polytomy (Freq = 2 means that the node is trichotomous)
+  merged = merge(nodes_df,polyt, by.x="node.nums", by.y= "Var1") # merde node df and polytomie df
+  nodes_df_weighted = as.data.frame(lapply(merged, rep, merged$Freq)) # df where nodes are as many times represented as "theoretical" nodes would be [if polytomy resolved]
+  
+  
+  ### 1) How informative is the gene tree ----
+  
+  #--- Which nodes are "good" (BS >= 70)
+  gnodes = nodes_df$node.nums[which(nodes_df$node.label >= 70)] # select nodes that have a bootstrap value > 70
+  
+  gnodes_weighted = nodes_df_weighted$node.nums[which(nodes_df_weighted$node.label >= 70)] # list of good nodes, weighted by the polytomies (node numbers multiplicated)
+  
+  #--- How many "good" nodes (BS >= 70) [as a percentage relative to theoretical number of nodes] (weighted by polytomies)
+  
+  gnodes_num = length(which(nodes_df_weighted$node.label >= 70)) # how many nodes are "good" (BS > 70)
+  gnodes_perc = gnodes_num/node_num_theo*100 # relative percentage of good nodes for this gene tree (weighted by polytomies)
+  
+  
+  ### 2) How many of these "good" nodes agree/disagree with the species tree ---
+  
+  #--- Is the clade corresponding to node X monophyletic in the species tree? (agrees)
+  sptree_agrees = function(node_num){
+              selected_clade_tree = extract.clade(genetree,node_num)
+              return(is.monophyletic(sptree,selected_clade_tree$tip.label))}
+  
+  gnd_agree = sapply(gnodes_weighted, sptree_agrees) # which good nodes agree with sptree (weighted)
+  gnd_agree_perc = length(which(gnd_agree==T))/node_num_theo*100 # percentage of good nodes that agree with sptree (weighted)
+  
+  #--- Is the clade corresponding to node X not monophyletic in the species tree? (disagrees)
+  gnd_disagree = !(sapply(gnodes_weighted, sptree_agrees)) # which good nodes disagree with sptree (weighted)
+  gnd_disagree_perc = length(which(gnd_disagree==T))/node_num_theo*100 # percentage of good nodes that disagree with sptree (weighted)
+  
+  ### 3) How many nodes in general agree with sptree? ----
+  all_agree = sapply(nodes_df_weighted$node.nums,sptree_agrees)
+  all_agree_perc = length(which(all_agree==T))/node_num_theo*100
+  
+  all_disagree = !sapply(nodes_df_weighted$node.nums,sptree_agrees)
+  all_disagree_perc = length(which(all_disagree==T))/node_num_theo*100
+  
+  ### Export results ----
+  resultdf=data.frame("genetree" = gene_name, "gnodes_perc" = round(gnodes_perc,3),"gnd_agree_perc" = round(gnd_agree_perc,3),"gnd_disagree_perc" = round(gnd_disagree_perc,3),"all_agree_perc" = all_agree_perc, "all_disagree_perc" = all_disagree_perc)
+  
+  # if output file exists and is not empty:
+  if ((file.exists(output)) & (file.info(output)$size != 0)){
+    # append resultdf to existing file
+    write.table(resultdf,output,append = T, quote = F,  row.names=FALSE, col.names=FALSE)} else {
+    # create a new file with resultdf
+    write.table(resultdf,output, quote = F, row.names=FALSE)
+    }
+  
+} # end of function
+

@@ -90,4 +90,4 @@ rm *.htm
 rm *combined.fasta
 
 
-cd $WD
+cd $GWD

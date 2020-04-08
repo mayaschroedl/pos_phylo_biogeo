@@ -65,22 +65,24 @@ cd $WD/3_gene_trees/$dir_value
 
 # #rax1_ML-ng + bootstrap
 while read gene;
- do rax1_ML-ng --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTR+G --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"1_ML/"$gene" #built best maximum likelihood trees
- rax1_ML-ng --bootstrap --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTR+G --seed 2 --bs-trees 200 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene"
- rax1_ML-ng --support --tree $WD/3_gene_trees/"$dir_value"1_ML/"$gene".rax1_ML.bestTree --bs-trees $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene".rax1_ML.bootstraps --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"3_support/"$gene"
+ do raxml-ng --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTR+G --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"1_ML/"$gene" #built best maximum likelihood trees
+ raxml-ng --bootstrap --msa $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta --model GTR+G --seed 2 --bs-trees 200 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene"
+ raxml-ng --support --tree $WD/3_gene_trees/"$dir_value"1_ML/"$gene".raxml.bestTree --bs-trees $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene".raxml.bootstraps --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"3_support/"$gene"
 done < $WD/genelist_7575.txt
 
 #reorganize if necessary
 
+raxml-ng --support --tree $WD/3_gene_trees/"$dir_value"1_ML/"$gene".raxml.bestTree --bs-trees $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene".raxml.bootstraps --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"3_support/TBE/"$gene" --bs-metric TBE
+
 #collapse all branches with bootstrap <10 #with newick utilities
 while read gene;
-do nw_ed $WD/3_gene_trees/"$dir_value"3_support/"$gene".raxml.support 'i & (b<=10)' o > $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene".raxml.support.coll;
+do nw_ed $WD/3_gene_trees/"$dir_value"3_support/"$gene".raxml.support 'i & (b<=10)' o > $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.coll;
 done < $WD/genelist_7575.txt
 
 #combine all RAxML genetrees with support into one file for later use in astral
 cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll > $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll
 
-cd $WD
+cd $GWD
 
 
 
