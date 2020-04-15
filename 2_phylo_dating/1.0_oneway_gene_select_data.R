@@ -26,23 +26,26 @@ if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
 # Working directories -----------------------------------------------------
 wd = getwd()
 
-# Easy Example ------------------------------------------------------------
+# Minimal Example ------------------------------------------------------------
 
 ### Input ----
-sptree = read.tree(text = "(((A,B),(C,D)),((E,F),G));")
-plot.phylo(sptree)
+sptree = read.tree(text = "((((A,B),C),(D,E)),((F,G),H));")
+plot.phylo(sptree,main="sptree")
 
-genetree = read.tree(text = "(((A,B,C,F)0.95,D)0.4,((E,F)0.1,G)0.8)0.4;")
-plot.phylo(genetree)
-nodelabels(frame="none")
+genetree = read.tree(text = "(((A,B,C,D)95,E)40,((F,G)10,H)80);")
+plot.phylo(genetree,main="genetree")
+nodelabels(text = genetree$node.label,frame="none")
 gene_name = "example"
 
 #### Output ----
-output = file.path(wd, "2_phylo_dating","1_oneway_gene_select","easy_example.stats")
-
+output = file.path(wd, "2_phylo_dating","1_oneway_gene_select","minimal_example.stats")
 
 #### Get distances ----
-gtree_sptree_distance(genetree, gene_name, sptree, output)
+file.remove(output) #delete output file
+signal_support_stats(genetree, gene_name, sptree, output)
+
+example_stats=read.table(output, h=T)
+View(example_stats)
 
 # Actual application ------------------------------------------------------
 
@@ -61,17 +64,40 @@ sptree = read.tree(sptree_file) #read species tree
 output = file.path(wd, "2_phylo_dating","1_oneway_gene_select","my_genetrees.stats")
 
 #### Get distances ----
-file.remove(output) #delete output file
+if (file.exists(output)){file.remove(output)} #delete output file
 for (gene in gene_list){
   genetree = read.tree(file.path(genetrees_folder,paste0(gene, suffix)))
-  gtree_sptree_distance(genetree,gene, sptree, output)
+  genetree$edge.length = NULL #make relations better visible (remove branch lengths for this analysis)
+  #plot(genetree, main = gene) #have a look how tree looks
+  #nodelabels(text=genetree$node.label,frame = "none") #add bootstrap support
+  
+  signal_support_stats(genetree,gene, sptree, output)
   }
 
 #### Select genes ----
 
 stats=read.table(output, h=T)
 
-stats_sorted = stats %>% 
-  arrange(desc(gnd_agree_perc), gnd_disagree_perc)
+View(stats)
 
-View(stats_sorted)
+# we would like to chose the genes that have:
+#   - the most good nodes in general (to not only take "bad trees")
+#   - the least good nodes disagreeing with sptree
+#   - the most good nodes agreeing with sptree
+
+hist(stats$gnodes_perc)
+hist(stats$gnd_disagree_perc)
+hist(stats$gnd_agree_perc)
+
+plot(stats$gnodes_perc,stats$gnd_disagree_perc)
+plot(stats$gnd_disagree_perc,stats$gnd_agree_perc)
+
+stats_sorted = stats %>%
+  arrange(gnd_disagree_perc,desc(gnd_agree_perc),desc(gnodes_perc))
+write.table(stats_sorted,output, quote = F, row.names=FALSE)
+
+
+plot(sptree, main = "sptree")
+gene="S508"
+plot(genetree, main = gene)
+nodelabels(text = genetree$node.label, frame = "none")

@@ -4,11 +4,11 @@
 # Script: oneway_gene_select_function.R
 # --- Action: Compares gene trees to Astral tree (one direction) in order to 
 # ------------ select the genes that are the most similar to the Astral tree
-# ------------ and the most informative (BS > 70%)
+# ------------ and the most informative (BS > 75%)
 # --- Input: species tree, folder with individual rooted gene trees (with outgroup!)
-# --- Output: 
+# --- Output: different statistics on how much the genetree agrees/disagrees with sptree
 # Author: Maya Schroedl
-# Date: 11/2019
+# Date: 04/2020
 ###########################################################################
 
 rm(list = ls()) #clear environment
@@ -18,13 +18,21 @@ addTaskCallback(function(...){set.seed(42);TRUE}) #set seed to 42 for whole doc
 # Libraries ---------------------------------------------------------------
 if (!require('ape')) install.packages('ape'); library('ape')
 if (!require('phylotools')) install.packages('phylotools'); library('phylotools')
+if (!require('gtools')) install.packages('gtools'); library('gtools')
 
 # Function ----------------------------------------------------------------
 
-gtree_sptree_distance=function(genetree, gene_name, sptree, output)
+signal_support_stats=function(genetree, gene_name, sptree, output)
 {
+  #genetree: newick tree file of the genetree, rooted
+  #gene_name: name of the gene
+  #sptree:  newick tree file of the sptree, rooted
+  #output: directory of the outputfile
   
   ### Prepare data and dataframes ----
+
+  #--- make relations better visible (remove branch lengths for this analysis)
+  genetree$edge.length = NULL
   
   #--- Get node numbers
   genetree$node.nums = seq(min(genetree$edge[,1]),max(genetree$edge[,1]))# extract sequence of node numbers
@@ -55,40 +63,42 @@ gtree_sptree_distance=function(genetree, gene_name, sptree, output)
   
   ### 1) How informative is the gene tree ----
   
-  #--- Which nodes are "good" (BS >= 70)
-  gnodes = nodes_df$node.nums[which(nodes_df$node.label >= 70)] # select nodes that have a bootstrap value > 70
+  #--- Which nodes are "good" (BS >= 75)
+  gnodes = nodes_df$node.nums[which(nodes_df$node.label >= 75)] # select nodes that have a bootstrap value > 75
   
-  gnodes_weighted = nodes_df_weighted$node.nums[which(nodes_df_weighted$node.label >= 70)] # list of good nodes, weighted by the polytomies (node numbers multiplicated)
+  gnodes_weighted = nodes_df_weighted$node.nums[which(nodes_df_weighted$node.label >= 75)] # list of good nodes, weighted by the polytomies (node numbers multiplicated)
   
-  #--- How many "good" nodes (BS >= 70) [as a percentage relative to theoretical number of nodes] (weighted by polytomies)
+  #--- How many "good" nodes (BS >= 75) [as a percentage relative to theoretical number of nodes] (weighted by polytomies)
   
-  gnodes_num = length(which(nodes_df_weighted$node.label >= 70)) # how many nodes are "good" (BS > 70)
+  gnodes_num = length(which(nodes_df_weighted$node.label >= 75)) # how many nodes are "good" (BS > 75)
   gnodes_perc = gnodes_num/node_num_theo*100 # relative percentage of good nodes for this gene tree (weighted by polytomies)
   
-  
-  ### 2) How many of these "good" nodes agree/disagree with the species tree ---
-  
+  ### 2) How many nodes agree/disagree with sptree? ----
   #--- Is the clade corresponding to node X monophyletic in the species tree? (agrees)
-  sptree_agrees = function(node_num){
-              selected_clade_tree = extract.clade(genetree,node_num)
-              return(is.monophyletic(sptree,selected_clade_tree$tip.label))}
+    #Not on polytomies: we only look at the crown node of the polytomy and see wether its tiplabels are a monophyletic group in the sp tree. the result (T or F) is weighted by the number of nodes a resolved polytomy would have (nodes_df_weighted). !ATTENTION! this analysis is very sensitive to when one species is not in the polytomy clade in the sptree, then the polytomy-node is counted as disagreeing with sptree
+
+      sptree_agrees = function(node_num){
+        selected_clade_tree = extract.clade(genetree,node_num)
+        return(is.monophyletic(sptree,selected_clade_tree$tip.label))}
   
+  nd_agree = sapply(nodes_df_weighted$node.nums, sptree_agrees) # which nodes agree with sptree (weighted)
+  nd_agree_perc = length(which(nd_agree==T))/node_num_theo*100 # percentage of nodes that agree with sptree (weighted)
+  
+  nd_disagree = !(sapply(nodes_df_weighted$node.nums, sptree_agrees)) # which nodes disagree with sptree (weighted)
+  nd_disagree_perc = length(which(nd_disagree==T))/node_num_theo*100 # percentage of nodes that disagree with sptree (weighted)
+  
+
+  ### 3) How many nodes are "good" (BS >= 75) and agree/disagree with the species tree ---
   gnd_agree = sapply(gnodes_weighted, sptree_agrees) # which good nodes agree with sptree (weighted)
-  gnd_agree_perc = length(which(gnd_agree==T))/node_num_theo*100 # percentage of good nodes that agree with sptree (weighted)
+  gnd_agree_perc = length(which(gnd_agree==T))/node_num_theo*100 # percentage of nodes that are good nodes and agree with sptree (weighted)
   
   #--- Is the clade corresponding to node X not monophyletic in the species tree? (disagrees)
   gnd_disagree = !(sapply(gnodes_weighted, sptree_agrees)) # which good nodes disagree with sptree (weighted)
-  gnd_disagree_perc = length(which(gnd_disagree==T))/node_num_theo*100 # percentage of good nodes that disagree with sptree (weighted)
-  
-  ### 3) How many nodes in general agree with sptree? ----
-  all_agree = sapply(nodes_df_weighted$node.nums,sptree_agrees)
-  all_agree_perc = length(which(all_agree==T))/node_num_theo*100
-  
-  all_disagree = !sapply(nodes_df_weighted$node.nums,sptree_agrees)
-  all_disagree_perc = length(which(all_disagree==T))/node_num_theo*100
-  
+  gnd_disagree_perc = length(which(gnd_disagree==T))/node_num_theo*100 # percentage of nodes that are good nodes and disagree with sptree (weighted)
+
+
   ### Export results ----
-  resultdf=data.frame("genetree" = gene_name, "gnodes_perc" = round(gnodes_perc,3),"gnd_agree_perc" = round(gnd_agree_perc,3),"gnd_disagree_perc" = round(gnd_disagree_perc,3),"all_agree_perc" = all_agree_perc, "all_disagree_perc" = all_disagree_perc)
+  resultdf=data.frame("genetree" = gene_name, "gnodes_perc" = round(gnodes_perc,3),"nd_agree_perc" = nd_agree_perc, "nd_disagree_perc" = nd_disagree_perc,"gnd_agree_perc" = round(gnd_agree_perc,3),"gnd_disagree_perc" = round(gnd_disagree_perc,3))
   
   # if output file exists and is not empty:
   if ((file.exists(output)) & (file.info(output)$size != 0)){
