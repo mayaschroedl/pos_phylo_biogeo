@@ -49,6 +49,8 @@ mkdir -p $WD/3_gene_trees/"$dir_value"2_bootstrap #store bootstrap trees
 mkdir -p $WD/3_gene_trees/"$dir_value"3_support #store support trees
 mkdir -p $WD/3_gene_trees/"$dir_value"4_collapsed #store support trees with collapsed branches
 
+mkdir -p $WD/3_gene_trees/"$dir_value"3_support/TBE/
+
 rm $WD/3_gene_trees/"$dir_value"1_ML/*
 rm $WD/3_gene_trees/"$dir_value"2_bootstrap/*
 rm $WD/3_gene_trees/"$dir_value"3_support/*
@@ -73,11 +75,15 @@ done < $WD/genelist_7575.txt
 #reorganize if necessary
 
 raxml-ng --support --tree $WD/3_gene_trees/"$dir_value"1_ML/"$gene".raxml.bestTree --bs-trees $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene".raxml.bootstraps --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"3_support/TBE/"$gene" --bs-metric TBE
+raxmlHPC -f a -m GTRGAMMA -p 12345 -x 12345 -# 100 -s $WD/2_alignment/$dir_value"$gene"_aligned_gb.fasta -n T20
 
-#collapse all branches with bootstrap <10 #with newick utilities
+
 while read gene;
-do nw_ed $WD/3_gene_trees/"$dir_value"3_support/"$gene".raxml.support 'i & (b<=10)' o > $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.coll;
+do nw_ed $WD/3_gene_trees/"$dir_value"3_support/"$gene".raxml.support 'i & (b<=10)' o > $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.bst_coll"; #collapse all branches with bootstrap <10 #with newick utilities
+Rscript $GWD/scripts/1_phylo_reconstruction/3.1_collapse_low_brnlen.R $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.bst_coll" $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.coll" 
+#collapse all branches with low branchlength (< 0.00001)
 done < $WD/genelist_7575.txt
+
 
 #combine all RAxML genetrees with support into one file for later use in astral
 cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll > $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll

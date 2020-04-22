@@ -58,7 +58,7 @@ mkdir -p $WD/5_phypartstopiecharts/$dir_value
 #----REROOT GENE TREES----#
 cd $WD/3_gene_trees/$dir_value
 
-rm $WD/3_gene_trees/"$dir_value"4_collapsed/*_rooted
+rm $WD/3_gene_trees/"$dir_value"4_collapsed/*_rooted*
 
 for gene_tree in $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll; do nw_reroot $gene_tree $outgroup -s > ${gene_tree/.raxml.support.coll}_rooted.raxml.support.coll; done #-s option important to get bootstrap values on right nodes (see paper 
 

@@ -5,7 +5,7 @@
 # --- Action: Compares gene trees to Astral tree (one direction) in order to 
 # ------------ select the genes that are the most similar to the Astral tree
 # ------------ and the most informative (BS > 75%)
-# --- Input: species tree, folder with individual rooted gene trees (with outgroup!)
+# --- Input: species tree, folder with individual rooted gene trees (with outgroup! + collapsed nodes (BS < 10) and collapsed nodes (branch length < 0.00002))
 # --- Output: different statistics on how much the genetree agrees/disagrees with sptree
 # Author: Maya Schroedl
 # Date: 04/2020
@@ -18,6 +18,7 @@ addTaskCallback(function(...){set.seed(42);TRUE}) #set seed to 42 for whole doc
 # Libraries ---------------------------------------------------------------
 if (!require('ape')) install.packages('ape'); library('ape')
 if (!require('phylotools')) install.packages('phylotools'); library('phylotools')
+if (!require('adephylo')) install.packages('adephylo'); library('adephylo')
 if (!require('gtools')) install.packages('gtools'); library('gtools')
 
 # Function ----------------------------------------------------------------
@@ -30,9 +31,8 @@ signal_support_stats=function(genetree, gene_name, sptree, output)
   #output: directory of the outputfile
   
   ### Prepare data and dataframes ----
-
-  #--- make relations better visible (remove branch lengths for this analysis)
-  genetree$edge.length = NULL
+  
+  genetree_original = genetree # to store original genetree, which we will not modify
   
   #--- Get node numbers
   genetree$node.nums = seq(min(genetree$edge[,1]),max(genetree$edge[,1]))# extract sequence of node numbers
@@ -95,10 +95,15 @@ signal_support_stats=function(genetree, gene_name, sptree, output)
   #--- Is the clade corresponding to node X not monophyletic in the species tree? (disagrees)
   gnd_disagree = !(sapply(gnodes_weighted, sptree_agrees)) # which good nodes disagree with sptree (weighted)
   gnd_disagree_perc = length(which(gnd_disagree==T))/node_num_theo*100 # percentage of nodes that are good nodes and disagree with sptree (weighted)
+  gnd_disagree_nbr = length(which(gnd_disagree==T)) # how many good nodes disagree
 
 
+  #### Root-tip-variance -------------------------------------------------------
+  # as proxy of "clock-likeness". Check: Smith, S. A., Brown, J. W., & Walker, J. F. (2018). So many genes, so little time: a practical approach to divergence-time estimation in the genomic era. PloS one, 13(5). https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0197433 
+  dist_root = var(adephylo::distRoot(genetree_original))
+  
   ### Export results ----
-  resultdf=data.frame("genetree" = gene_name, "gnodes_perc" = round(gnodes_perc,3),"nd_agree_perc" = nd_agree_perc, "nd_disagree_perc" = nd_disagree_perc,"gnd_agree_perc" = round(gnd_agree_perc,3),"gnd_disagree_perc" = round(gnd_disagree_perc,3))
+  resultdf=data.frame("genetree" = gene_name, "gnodes_perc" = round(gnodes_perc,3),"nd_agree_perc" = nd_agree_perc, "nd_disagree_perc" = nd_disagree_perc,"gnd_agree_perc" = round(gnd_agree_perc,3),"gnd_disagree_perc" = round(gnd_disagree_perc,3), "gnd_disagree_nbr" = round(gnd_disagree_nbr,3), "diff_ga_gd" = round(gnd_agree_perc - gnd_disagree_perc,3), "dist_root" = round(dist_root*100000,3) )
   
   # if output file exists and is not empty:
   if ((file.exists(output)) & (file.info(output)$size != 0)){

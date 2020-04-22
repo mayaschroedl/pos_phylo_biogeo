@@ -42,7 +42,7 @@ output = file.path(wd, "2_phylo_dating","1_oneway_gene_select","minimal_example.
 
 #### Get distances ----
 file.remove(output) #delete output file
-signal_support_stats(genetree, gene_name, sptree, output)
+#signal_support_stats(genetree, gene_name, sptree, output)
 
 example_stats=read.table(output, h=T)
 View(example_stats)
@@ -67,11 +67,12 @@ output = file.path(wd, "2_phylo_dating","1_oneway_gene_select","my_genetrees.sta
 if (file.exists(output)){file.remove(output)} #delete output file
 for (gene in gene_list){
   genetree = read.tree(file.path(genetrees_folder,paste0(gene, suffix)))
-  genetree$edge.length = NULL #make relations better visible (remove branch lengths for this analysis)
+  #genetree$edge.length = NULL #make relations better visible (remove branch lengths for this analysis)
   #plot(genetree, main = gene) #have a look how tree looks
   #nodelabels(text=genetree$node.label,frame = "none") #add bootstrap support
   
   signal_support_stats(genetree,gene, sptree, output)
+  
   }
 
 #### Select genes ----
@@ -84,6 +85,16 @@ View(stats)
 #   - the most good nodes in general (to not only take "bad trees")
 #   - the least good nodes disagreeing with sptree
 #   - the most good nodes agreeing with sptree
+#   - the most clocklike
+
+
+stats_sorted = stats %>%
+  arrange(dist_root)
+
+
+stats_sorted = stats %>%
+  arrange(gnd_disagree_perc,desc(gnd_agree_perc),desc(gnodes_perc))
+
 
 hist(stats$gnodes_perc)
 hist(stats$gnd_disagree_perc)
@@ -92,12 +103,15 @@ hist(stats$gnd_agree_perc)
 plot(stats$gnodes_perc,stats$gnd_disagree_perc)
 plot(stats$gnd_disagree_perc,stats$gnd_agree_perc)
 
-stats_sorted = stats %>%
-  arrange(gnd_disagree_perc,desc(gnd_agree_perc),desc(gnodes_perc))
+
+
+#stats_sorted$diff_ga_gd = stats_sorted$gnd_agree_perc - stats_sorted$gnd_disagree_perc
+View(stats_sorted)
+
 write.table(stats_sorted,output, quote = F, row.names=FALSE)
 
 
 plot(sptree, main = "sptree")
-gene="S508"
+gene="E2339"
 plot(genetree, main = gene)
 nodelabels(text = genetree$node.label, frame = "none")
