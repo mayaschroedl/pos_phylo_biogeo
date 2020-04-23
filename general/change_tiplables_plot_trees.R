@@ -40,17 +40,17 @@ dir_plots_phylo=file.path(gwd,"plots","phylogenies")
 if (!dir.exists(dir_plots_phylo)){dir.create(dir_plots_phylo, recursive=T)}
 
 # Species tree -------------------------------------------------------------
-sptree_rooted=file.path(wd, "4_coalescent_trees", t, "coalescent_lpp_rooted.tree")
+sptree_rooted=file.path(wd, "4_coalescent_trees", t, "coalescent_lpp.tree")
 
 dev.off()
-pdf(file.path(dir_plots_phylo,"coalescent_rooted.pdf"))
+pdf(file.path(dir_plots_phylo,"coalescent_lpp_rooted.pdf"))
 change_tip_labs(sptree_rooted)
 dev.off()
 
 # Gene trees --------------------------------------------------------------
 genelist=read.table(file.path(wd,"genelist_7575.txt"))$V1
 
-gene_tree_list=lapply(genelist,function(gene){return(file.path(wd, "3_gene_trees", t, "4_collapsed",paste0(gene,"_rooted.raxml.support.coll")))})
+gene_tree_list=lapply(genelist,function(gene){return(file.path(wd, "3_gene_trees", t, "4_collapsed",paste0(gene,".raxml.support.coll")))})
 
 dev.off()
 pdf(file.path(dir_plots_phylo,"gene_trees_rooted.pdf"))

@@ -13,29 +13,33 @@
 rm(list=ls())
 
 # Libraries ---------------------------------------------------------------
-pkg_install=function(pkg_name){
-  if (!require(pkg_name)) install.packages(pkg_name)
-  require(pkg_name, character.only = TRUE)}
+ipak <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
 
-pkg_list=c("GenSA", "FD", "snow", "parallel", "rexpokit", "BioGeoBEARS")
+pkg_list=c("GenSA", "FD", "snow", "parallel", "rexpokit", "BioGeoBEARS","cladoRcpp")
 
-lapply(pkg_list, pkg_install)
+ipak(pkg_list)
 
 # Working directory -------------------------------------------------------
-wd=file.path(getwd(),"3_biogeography","biogeobears")
+gwd = getwd() #general wd
+wd = file.path(gwd,"3_biogeography","biogeobears") #current wd
 
 extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))#extra directory
 
 # General setup -----------------------------------------------------------
 #### Tree file
-trfn = file.path(wd, "or,orscldyp,sclpod_RF_selected_concat_cons_R_calib_lab.tre")
+trfn = file.path(wd, "S886_aligned_gb_head_sp_added_R_calib_lab.tre")
 outgroup = "Dypsis_mananjarensis"
 
 tr = read.tree(trfn) #open tree
 tr_no_outgrp = drop.tip(tr, outgroup) #remove outgroup
-write.tree(tr_no_outgrp, file.path(wd, "or,orscldyp,sclpod_RF_selected_concat_cons_R_calib_lab_no_outgrp.tre")) #write new tree without outgroup
+write.tree(tr_no_outgrp, file.path(wd, "S886_aligned_gb_head_sp_added_R_calib_lab_no_outgrp.tre")) #write new tree without outgroup
 
-trfn = file.path(wd, "or,orscldyp,sclpod_RF_selected_concat_cons_R_calib_lab_no_outgrp.tre") #open new tree without outgroup
+trfn = file.path(wd, "S886_aligned_gb_head_sp_added_R_calib_lab_no_outgrp.tre") #open new tree without outgroup
 tr = read.tree(trfn) #read new tree
 plot(tr) #plot new tree
 
@@ -52,6 +56,13 @@ max(rowSums(dfnums_to_numeric(tipranges@df)))
 # set the maximum number of areas any species may occupy; this cannot be larger than the number of areas you set up, but it can be smaller.
 max_range_size = 2 #we chose two areas
 
+##### NODE CONSTRAINT ####
+# from Baker et al (2013a): doi:10.1111/j.1365-2699.2012.02795.x; we constrain the basal node to "S" South-East Asia (Baker et al: region F)
+
+node=c(28)
+#ranges_list: "_"  "A"  "S"  "M"  "AS" "AM" "SM"
+likes=c(0,0,1,0,0,0,0)
+
 
 # Different models --------------------------------------------------------
 
@@ -61,6 +72,10 @@ max_range_size = 2 #we chose two areas
 
 # Intitialize a default model (DEC model)
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
 
 # Give BioGeoBEARS the location of the phylogeny Newick file
 BioGeoBEARS_run_object$trfn = trfn
@@ -132,6 +147,11 @@ if (runslow)
 ## DIVALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -201,6 +221,12 @@ if (runslow)
 ## BAYAREALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
+
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -294,6 +320,11 @@ if (runslow)
 # Intitialize a default model (DEC model)
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
 # Give BioGeoBEARS the location of the phylogeny Newick file
 BioGeoBEARS_run_object$trfn = trfn
 
@@ -374,6 +405,11 @@ if (runslow)
 ## DIVALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -453,6 +489,11 @@ if (runslow)
 ## BAYAREALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -547,6 +588,10 @@ if (runslow)
 # Intitialize a default model (DEC model)
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
 # Give BioGeoBEARS the location of the phylogeny Newick file
 BioGeoBEARS_run_object$trfn = trfn
 
@@ -626,6 +671,11 @@ if (runslow)
 ## DIVALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -705,6 +755,11 @@ if (runslow)
 ## BAYAREALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
+
+# Node constrain
+BioGeoBEARS_run_object$fixnode=node
+BioGeoBEARS_run_object$fixlikes=likes
+
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -860,13 +915,15 @@ ranges_list
 colors_list_for_states=c("white","khaki1","lightskyblue","firebrick3","sienna1","darkolivegreen1","mediumpurple3")
 
 dev.off()
-pdf(file.path(wd, "BioGeoBEARS_DIVALIKE_M0.pdf"))#save plots #rename accordingly to model chosen
+plot_dir = file.path(gwd, "plots","biogeobears")
+if (!dir.exists(plot_dir)){dir.create(plot_dir)}
+pdf(file.path(plot_dir,"BioGeoBEARS_DIVALIKE_M0.pdf"))#save plots #rename accordingly to model chosen
 
 # States
-plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges, colors_list_for_states=colors_list_for_states)
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#, colors_list_for_states=colors_list_for_states)
 
 # Pie chart
-plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges, colors_list_for_states=colors_list_for_states)
+plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#, colors_list_for_states=colors_list_for_states)
 
 dev.off()
 

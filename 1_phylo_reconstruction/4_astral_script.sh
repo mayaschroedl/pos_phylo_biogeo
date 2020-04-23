@@ -60,20 +60,20 @@ rm *
 #ASTRAL tree with tips representing individuals (individuals of same species are not merged into one species tip)
 
 #execute with branch support as local posterior probabilities (lpp) [default]
-java -jar $GWD/programs/Astral/astral.5.6.3.jar -t 1 -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_lpp.log
+java -jar $GWD/programs/Astral/astral.5.6.3.jar -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_lpp.log
 
-#execute with branch support as quartet support (qs) [-t 1]
-java -jar $GWD/programs/Astral/astral.5.6.3.jar -t 1 -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_qs.log
+#execute with branch support as all quartet supports (qs) [-t 8]
+java -jar $GWD/programs/Astral/astral.5.6.3.jar -t 8 -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_qs.log
 
 #bootstrap
 #java -jar $WD/programs/Astral/astral.5.6.3.jar -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll  -b $WD/3_gene_trees/"$dir_value"2_bootstrap  -o $WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.log
 
 #----REROOT TREES----#
-nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_rooted.tree | nw_topology -
+nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_rooted.tree 
 
-nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_qs_rooted.tree | nw_topology -
+nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_qs_rooted.tree 
 
-#nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_bstrp.tree | nw_topology -
+#nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_bstrp.tre
 
 
 cd $GWD
