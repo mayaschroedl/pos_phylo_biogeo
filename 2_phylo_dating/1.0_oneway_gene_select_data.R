@@ -111,4 +111,9 @@ View(stats_sorted)
 write.table(stats_sorted,output, quote = F, row.names=FALSE)
 
 
+plot(sptree, main = "sptree")
+gene="S508"
+plot(genetree, main = gene)
+nodelabels(text = genetree$node.label, frame = "none")
+
 
