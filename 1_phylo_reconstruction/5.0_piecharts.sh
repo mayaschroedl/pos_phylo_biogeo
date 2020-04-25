@@ -51,22 +51,9 @@ fi
 
 mkdir -p $WD/5_phypartstopiecharts/$dir_value
 
-######################
-#----REROOT TREES----#
-######################
-
-#----REROOT GENE TREES----#
-cd $WD/3_gene_trees/$dir_value
-
-rm $WD/3_gene_trees/"$dir_value"4_collapsed/*_rooted*
-
-for gene_tree in $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support_lab.tree; do nw_reroot $gene_tree $outgroup > ${gene_tree/.raxml.support_lab.tree}_rooted.raxml.support_lab.tree; done #-s option important to get bootstrap values on right nodes
-
-#combine all rooted RAxML genetrees with support into one file
-cat $WD/3_gene_trees/"$dir_value"4_collapsed/*_rooted.raxml.support_lab.tree > $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes_rooted.raxml.support_lab.tree
 
 #remove spaces from species tree (because this might be a problem with phyparts)
-sed -i 's/\s*$//' $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_lab.tree
+sed -i 's/\s*$//' $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab
 
 
 ##################

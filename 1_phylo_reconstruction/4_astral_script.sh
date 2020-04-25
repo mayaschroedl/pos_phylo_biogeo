@@ -14,23 +14,30 @@
 #----ARGUMENTS----#
 ###################
 
-#t: if you want trimmed contigs, based on coverage and threshold, enter t=threshold
-#o: outgroup 
-while getopts ":t:o:" opt; do
+
+#t:if you want trimmed contigs, based on coverage and threshold, enter t:threshold
+#o: outgroup (TAG)
+#l: labeled outgroup (individual name)
+while getopts ":t:o:l:" opt; do
   case ${opt} in
     t)
-      echo "-t was triggered, Threshold: $OPTARG"
+      echo "-t was triggered, File: $OPTARG"
       t=$OPTARG
       ;;
-	  o)
+o)
       echo "-o was triggered, Outgroup: $OPTARG"
       outgroup=$OPTARG
       ;;
+	  
+	  l)
+      echo "-l was triggered, labeled Outgroup: $OPTARG"
+      outgroup_lab=$OPTARG
+      ;;
+	  
     \?)
       echo "Invalid option: -$OPTARG" >&2
       exit 1
       ;;
-
   esac
 
 done
@@ -68,12 +75,27 @@ java -jar $GWD/programs/Astral/astral.5.6.3.jar -t 8 -i $WD/3_gene_trees/"$dir_v
 #bootstrap
 #java -jar $WD/programs/Astral/astral.5.6.3.jar -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll  -b $WD/3_gene_trees/"$dir_value"2_bootstrap  -o $WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.log
 
+######################
+#----LABEL TREES----#
+######################
+Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab $WD/renamed_reads/tags_indiv.txt
+
+Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_lab $WD/renamed_reads/tags_indiv.txt
+
+######################
 #----REROOT TREES----#
-nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_rooted.tree 
+######################
 
-nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_qs_rooted.tree 
+#for unlabeled
+Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_rooted $outgroup
+ 
+Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_rooted  $outgroup
 
-#nw_reroot $WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.tree $outgroup > $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_bstrp.tre
+#for labeled
+Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab_rooted $outgroup_lab
+ 
+Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_lab $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_lab_rooted  $outgroup_lab
+
 
 
 cd $GWD
