@@ -28,7 +28,9 @@ change_tip_labs=function(input_tree,output_tree,tag_indiv_df){
   lab_tree=sub.taxa.label(tree, tag_indiv_df) #replace tiplables
   #output
   write.tree(lab_tree, output_tree)
-  return(plot) #plot #basename: get only last part of path (here: filename)
+  
+  # Because this produces NaN as branchlengths for the tiplabels in astral trees, we want to remove the ":NaN"
+  system(paste('sed -i -e "s/:NaN//g"', output_tree))
 }
 
 change_tip_labs(input_tree,output_tree,tag_indiv_df)
