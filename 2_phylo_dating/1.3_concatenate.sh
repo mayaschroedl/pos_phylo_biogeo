@@ -53,7 +53,7 @@ mkdir -p $WD/3_all_genes/$dir_value
 
 cd $WD/2_alignment/"$dir_value"
 
-python $GWD/scripts/1_phylo_dating/Gene_Sticher.py -in *_gb.fasta
+python $GWD/scripts/2_phylo_dating/Gene_Stitcher.py -in *_gb.fasta
 
 cat *_gb.fasta|awk -v RS=">" -v FS="\n" -v OFS="\n" '{for(i=2; i<=NF; i++) {seq[$1] = seq[$1]$i}}; END {for(id in seq){print ">"id, seq[id]}}' > $WD/3_all_genes/$dir_value"all_genes_concat.fasta"
 

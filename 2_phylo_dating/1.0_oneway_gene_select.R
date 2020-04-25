@@ -25,9 +25,9 @@ if (!require('gtools')) install.packages('gtools'); library('gtools')
 
 signal_support_stats=function(genetree, gene_name, sptree, output)
 {
-  #genetree: newick tree file of the genetree, rooted
+  #genetree: newick tree file of the genetree, rooted with ape(edgelabel = TRUE,resolve.root=TRUE)
   #gene_name: name of the gene
-  #sptree:  newick tree file of the sptree, rooted
+  #sptree:  newick tree file of the sptree, rooted with ape(edgelabel = TRUE,resolve.root=TRUE)
   #output: directory of the outputfile
   
   ### Prepare data and dataframes ----
@@ -42,7 +42,7 @@ signal_support_stats=function(genetree, gene_name, sptree, output)
   nodes_df = data.frame(node.nums = genetree$node.nums, node.label = genetree$node.label)
   
   # do not take into consideration the nodes that have no bootstrap value (outgroup)
-    no_support_num =   which(nodes_df$node.label == "")
+    no_support_num =   which(nodes_df$node.label == "" | nodes_df$node.label == "Root")
     no_support = length(no_support_num) # how many nodes do not have bootstrap value
     nodes_df = nodes_df[-no_support_num,]
   

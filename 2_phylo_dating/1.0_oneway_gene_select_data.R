@@ -53,7 +53,7 @@ View(example_stats)
 ## Rooted gene trees ----
 genetrees_folder = file.path(wd, "1_phylo_reconstruction", "3_gene_trees", "2", "4_collapsed") #where are the gene trees
 gene_list = read.table(file.path(wd, "1_phylo_reconstruction", "genelist_7575.txt"))[,1] #list of all the genes
-suffix = "_rooted.raxml.support.coll" #how are the gene tree files named
+suffix = ".raxml.support.coll" #how are the gene tree files named
  
 ## Rooted species tree ----
 sptree_file = file.path(wd, "1_phylo_reconstruction","4_coalescent_trees", "2","coalescent_lpp_rooted.tree" ) #where is the species tree
@@ -111,7 +111,4 @@ View(stats_sorted)
 write.table(stats_sorted,output, quote = F, row.names=FALSE)
 
 
-plot(sptree, main = "sptree")
-gene="E2339"
-plot(genetree, main = gene)
-nodelabels(text = genetree$node.label, frame = "none")
+
