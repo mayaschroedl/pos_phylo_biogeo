@@ -98,7 +98,7 @@ signal_support_stats=function(genetree, gene_name, sptree, output)
   gnd_disagree_nbr = length(which(gnd_disagree==T)) # how many good nodes disagree
 
 
-  #### Root-tip-variance -------------------------------------------------------
+  ### Root-tip-variance -----
   # as proxy of "clock-likeness". Check: Smith, S. A., Brown, J. W., & Walker, J. F. (2018). So many genes, so little time: a practical approach to divergence-time estimation in the genomic era. PloS one, 13(5). https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0197433 
   dist_root = var(adephylo::distRoot(genetree_original))
   
