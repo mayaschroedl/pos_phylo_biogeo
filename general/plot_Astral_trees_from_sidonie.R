@@ -19,7 +19,7 @@ setwd("D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project/1_phylo_recon
 
 
 # import annotated ASTRAL tree (I like to use a tree rooted with pxrr directly after getting it from ASTRAL, before any editing)
-AS_all <- read.astral("coalescent_qs_rooted_lab.tree") #newick tree
+AS_all <- read.astral("coalescent_qs.tree_lab_rooted") #newick tree
 
 # plot and ladderize the tree, without using the ASTRAL branch lengths
 p <- ggtree(AS_all@phylo, ladderize=T, branch.length = "none") + geom_tiplab(size=2.5, hjust= -0.05) + xlim_tree(70) + ggtitle("ASTRAL all regions")

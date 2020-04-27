@@ -29,6 +29,12 @@ change_tip_labs=function(input_tree,output_tree,tag_indiv_df){
   #output
   write.tree(lab_tree, output_tree)
   
+  #When astral output with "q1, q2, & q3", the [q1, q2, q3] needs to be written as '[...]' 
+  system(paste0('sed -i -e ', '"s/\\[/\'\\[/g" ', output_tree))
+  system(paste0('sed -i -e ', '"s/\\]/\\]\'/g" ', output_tree))
+  # and - needs to be replaced by ;
+  system(paste0('sed -i -e ', '"s/-q/;q/g" ', output_tree))
+  
   # Because this produces NaN as branchlengths for the tiplabels in astral trees, we want to remove the ":NaN"
   system(paste('sed -i -e "s/:NaN//g"', output_tree))
 }
