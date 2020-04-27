@@ -53,7 +53,13 @@ mkdir -p $WD/3_all_genes/$dir_value
 
 cd $WD/2_alignment/"$dir_value"
 
-python $GWD/scripts/2_phylo_dating/Gene_Stitcher.py -in *_gb.fasta
+sed -i -e "s#^#/data_vol/maya/2_phylo_dating/2_alignment/$dir_value##"  most_diff.txt
+sed -i -e "s/$/_aligned_gb.fasta/" most_diff.txt 
+tr -d "\r" < most_diff.txt  >  most_diff.txt_ch  && mv  most_diff.txt_ch most_diff.txt 
+
+
+most_diff=$(cat most_diff.txt | tr "\r" "ddf ")
+pxcat -s $most_diff
 
 cat *_gb.fasta|awk -v RS=">" -v FS="\n" -v OFS="\n" '{for(i=2; i<=NF; i++) {seq[$1] = seq[$1]$i}}; END {for(id in seq){print ">"id, seq[id]}}' > $WD/3_all_genes/$dir_value"all_genes_concat.fasta"
 
