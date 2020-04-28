@@ -11,7 +11,7 @@
 
 rm(list=ls())
 
-# Libraries ---------------------------------------------------------------
+# Packages ---------------------------------------------------------------
 if (!require('ape')) install.packages('ape'); library('ape')
 if (!require('phylotools')) install.packages('phylotools'); library('phylotools')
 

@@ -12,16 +12,14 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import SingleLetterAlphabet
 
 WD="D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project"
-t=str(2)
+if not os.path.exists(WD+ "/2_phylo_dating/2_alignment"):
+	    os.makedirs(WD+ "/2_phylo_dating/2_alignment")
 
-if not os.path.exists(WD+ "/2_phylo_dating/2_alignment/"+t):
-	    os.makedirs(WD+ "/2_phylo_dating/2_alignment/"+t)
-
-for filename in os.listdir(WD+"/1_phylo_reconstruction/2_alignment/"+t+"/"):
+for filename in os.listdir(WD+"/1_phylo_reconstruction/2_alignment/"):
     with open(WD+"/1_phylo_reconstruction/namelist.txt","r") as totalsp:
         totalsp=totalsp.read().split('\n')
     
-    records = list(SeqIO.parse(WD+"/1_phylo_reconstruction/2_alignment/"+t+"/"+filename, "fasta"))
+    records = list(SeqIO.parse(WD+"/1_phylo_reconstruction/2_alignment/"+filename, "fasta"))
     recordids=[]
     
     for r in records:
@@ -38,11 +36,5 @@ for filename in os.listdir(WD+"/1_phylo_reconstruction/2_alignment/"+t+"/"):
     
 	
 	
-    SeqIO.write(records, WD+ "/2_phylo_dating/2_alignment/"+t+"/"+filename, "fasta")    
+    SeqIO.write(records, WD+ "/2_phylo_dating/2_alignment/"+filename, "fasta")    
         
-    
-   # with open(WD+"2_alignment/or,orscldyp,sclpod/RF_selected/"+filename+"_diff","w") as difffile:
-    #    for item in diff:
-    #        difffile.write("%s\n" % item)
-
-    

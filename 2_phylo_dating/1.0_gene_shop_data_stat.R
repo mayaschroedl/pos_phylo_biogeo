@@ -98,7 +98,7 @@ selected_dir = file.path(wd,"2_phylo_dating","1_gene_shop","selected_genes")
 if (!dir.exists(selected_dir)){dir.create(selected_dir)}
 
 write.table(no_gdis, file.path(selected_dir,"no_gdis.txt"),col.names=F,row.names = F,quote=F)
-write.table(no_gdis_most_diff, file.path(selected_dir,"most_diff.txt"))
-write.table(one_clock, file.path(selected_dir,"one_clock.txt"))
-write.table(three_clock, file.path(selected_dir,"three_clock.txt"))
-write.table(nine_clock, file.path(selected_dir,"nine_clock.txt"))
+write.table(no_gdis_most_diff, file.path(selected_dir,"most_diff.txt"),col.names=F,row.names = F,quote=F)
+write.table(one_clock, file.path(selected_dir,"clock_one.txt"),col.names=F,row.names = F,quote=F)
+write.table(three_clock, file.path(selected_dir,"clock_three.txt"),col.names=F,row.names = F,quote=F)
+write.table(nine_clock, file.path(selected_dir,"clock_nine.txt"),col.names=F,row.names = F,quote=F)

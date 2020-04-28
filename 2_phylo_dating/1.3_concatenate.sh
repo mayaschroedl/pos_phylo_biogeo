@@ -39,27 +39,36 @@ done
 GWD=$PWD #global working directory, with subprojects and scripts
 WD="$GWD"/2_phylo_dating #dating directory
 
-if ! [ -z "$t" ]; #if there is a threshold definded, then work in the threshold directory
-then
-        dir_value=$t/
-fi
-
-mkdir -p $WD/3_all_genes/$dir_value
-
+mkdir -p $WD/1_gene_shop/selected_genes
+mkdir -p $WD/2_alignment/concat
 
 ################################
 #----CONCATENATE ALIGNMENTS----#
 ################################
 
-cd $WD/2_alignment/"$dir_value"
+cd $WD/2_alignment/
 
-sed -i -e "s#^#/data_vol/maya/2_phylo_dating/2_alignment/$dir_value##"  most_diff.txt
-sed -i -e "s/$/_aligned_gb.fasta/" most_diff.txt 
-tr -d "\r" < most_diff.txt  >  most_diff.txt_ch  && mv  most_diff.txt_ch most_diff.txt 
+concat() {
+	filename=$1
+	sed -i -e "s#^#/data_vol/maya/2_phylo_dating/2_alignment/##" $WD/1_gene_shop/selected_genes/$filename.txt
+	sed -i -e "s/$/_aligned_gb.fasta/" $WD/1_gene_shop/selected_genes/$filename.txt
+	tr -d "\r" < $WD/1_gene_shop/selected_genes/$filename.txt  >  $filename.txt_ch  && mv  $filename.txt_ch $WD/1_gene_shop/selected_genes/$filename.txt 
 
+	selected_genes_str=$(cat $WD/1_gene_shop/selected_genes/$filename.txt | tr "\r" " ")
+	
+	echo $selected_genes_str
+	
+	pxcat -s $selected_genes_str -o $WD/2_alignment/concat/"$filename"_concat.fasta
+}
 
-most_diff=$(cat most_diff.txt | tr "\r" "ddf ")
-pxcat -s $most_diff
+rm $WD/2_alignment/concat/*
+concat no_gdis
+concat most_diff
+concat clock_one
+concat clock_three
+concat clock_nine
 
-cat *_gb.fasta|awk -v RS=">" -v FS="\n" -v OFS="\n" '{for(i=2; i<=NF; i++) {seq[$1] = seq[$1]$i}}; END {for(id in seq){print ">"id, seq[id]}}' > $WD/3_all_genes/$dir_value"all_genes_concat.fasta"
+#concatenate all genes
+
+pxcat -s $WD/2_alignment/*_gb.fasta -o $WD/2_alignment/concat/all_genes_concat.fasta
 
