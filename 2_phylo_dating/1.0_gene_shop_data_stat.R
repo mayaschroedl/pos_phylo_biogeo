@@ -1,16 +1,12 @@
 #!/usr/bin/env Rscript
 ###########################################################################
 # Project: Orania Phylogeny MT
-# Script: oneway_gene_select.R
+# Script: gene_shop_data_stat.R
 # --- Action: Compares gene trees to Astral tree (one direction) in order to 
-# ------------ select the genes that are the most similar to the Astral tree
-# ------------ and the most informative (BS > 70%)
-# --- Input: species tree, folder with individual gene trees
-# --- Output: 
+# ------------ select the genes that have the least "good" (BS > 75%) nodes disagreeing with the species tree. Also select among these selected genes the most clock-like genes.
+# --- Input: species tree, folder with individual rooted gene trees (with outgroup! + collapsed nodes (BS < 10) and collapsed nodes (branch length < 0.00002))
+# --- Output: sorted statistic based on the signal_support_stats function of the script gene_shop_fct.R and selected genes for different scenarii
 # Author: Maya Schroedl
-# Date: 11/2019
-###########################################################################
-###########################################################################
 ###########################################################################
 
 rm(list=ls())
@@ -83,7 +79,7 @@ most_diff = stats_nogdis_sorted$genetree[1:10]
 no_gdis_most_diff = c(no_gdis, most_diff)
 
 
-# 3) possible clock-like genes (having 0 disagreeing good nodes). need to be tested with Bayes factor beast
+# 3) possible clock-like genes (having 0 disagreeing good nodes). These genes need to be tested with Bayes factor beast, to see whether they are really clock-like and can be run with a strict model or not.
 
 #sort stats by ascending root distance
 stats_clock = stats[which(stats$genetree %in% no_gdis),] %>% #only have a look at no_gdis genes

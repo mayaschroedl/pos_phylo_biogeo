@@ -1,13 +1,12 @@
 #!/usr/bin/env Rscript
 ###########################################################################
 # Project: Orania Phylogeny MT
-# Script: oneway_gene_select_function.R
-# --- Action: Compares gene trees to Astral tree (one direction) in order to 
+# Script: gene_shop_fct.R
+# --- Action: Function that compares gene trees to Astral tree (one direction) in order to 
 # ------------ select the genes that have the least "good" (BS > 75%) nodes disagreeing with the species tree. Also select among these selected genes the most clock-like genes.
 # --- Input: species tree, folder with individual rooted gene trees (with outgroup! + collapsed nodes (BS < 10) and collapsed nodes (branch length < 0.00002))
 # --- Output: different statistics on how much the genetree agrees/disagrees with sptree; and how clock-like the genetree is in relation to others
 # Author: Maya Schroedl
-# Date: 04/2020
 ###########################################################################
 
 rm(list = ls()) #clear environment
