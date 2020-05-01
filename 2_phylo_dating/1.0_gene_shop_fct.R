@@ -3,10 +3,9 @@
 # Project: Orania Phylogeny MT
 # Script: oneway_gene_select_function.R
 # --- Action: Compares gene trees to Astral tree (one direction) in order to 
-# ------------ select the genes that are the most similar to the Astral tree
-# ------------ and the most informative (BS > 75%)
+# ------------ select the genes that have the least "good" (BS > 75%) nodes disagreeing with the species tree. Also select among these selected genes the most clock-like genes.
 # --- Input: species tree, folder with individual rooted gene trees (with outgroup! + collapsed nodes (BS < 10) and collapsed nodes (branch length < 0.00002))
-# --- Output: different statistics on how much the genetree agrees/disagrees with sptree
+# --- Output: different statistics on how much the genetree agrees/disagrees with sptree; and how clock-like the genetree is in relation to others
 # Author: Maya Schroedl
 # Date: 04/2020
 ###########################################################################
@@ -98,8 +97,8 @@ signal_support_stats=function(genetree, gene_name, sptree, output)
   gnd_disagree_nbr = length(which(gnd_disagree==T)) # how many good nodes disagree
 
 
-  ### Root-tip-variance -----
-  # as proxy of "clock-likeness". Check: Smith, S. A., Brown, J. W., & Walker, J. F. (2018). So many genes, so little time: a practical approach to divergence-time estimation in the genomic era. PloS one, 13(5). https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0197433 
+  ###  clock-likeness -----
+  # Root-tip-variance as proxy of "clock-likeness". Check: Smith, S. A., Brown, J. W., & Walker, J. F. (2018). So many genes, so little time: a practical approach to divergence-time estimation in the genomic era. PloS one, 13(5). https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0197433 
   dist_root = var(adephylo::distRoot(genetree_original))
   
   ### Export results ----
