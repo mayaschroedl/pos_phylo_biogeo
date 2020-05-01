@@ -86,12 +86,12 @@ no_gdis_most_diff = c(no_gdis, most_diff)
 # 3) possible clock-like genes (having 0 disagreeing good nodes). need to be tested with Bayes factor beast
 
 #sort stats by ascending root distance
-stats_clock = stats %>%
-  arrange(gnd_disagree_perc,dist_root)
+stats_clock = stats[which(stats$genetree %in% no_gdis),] %>% #only have a look at no_gdis genes
+  arrange(dist_root)
 
-one_clock = stats_dist$genetree[1] #the "best" gene
-three_clock = stats_dist$genetree[1:3] #the 3 "best" gene
-nine_clock = stats_dist$genetree[1:9] #the 9 "best" gene
+one_clock = stats_clock$genetree[1] #the "best" gene
+three_clock = stats_clock$genetree[1:3] #the 3 "best" gene
+nine_clock = stats_clock$genetree[1:9] #the 9 "best" gene
 
 # Write selected genes to files -------------------------------------------
 selected_dir = file.path(wd,"2_phylo_dating","1_gene_shop","selected_genes")
