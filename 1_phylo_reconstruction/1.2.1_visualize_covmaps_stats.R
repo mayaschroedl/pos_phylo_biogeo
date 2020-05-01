@@ -67,6 +67,9 @@ write.table(cover_all,file.path(wd,"1.1_coverage_maps","all_covmaps.txt"),row.na
 
 # Stats -------------------------------------------------------------------
 #---- Simple stat summary ----
+
+cover_all=read.table(file.path(wd,"1.1_coverage_maps","all_covmaps.txt"),h=T)
+
 mean(cover_all$depth)
 sd(cover_all$depth)
 min(cover_all$depth)
@@ -84,6 +87,9 @@ cov.contig=cover_all %>%
   group_by(gene,tag)%>% #for each gene/tag combination:
   summarize(have.tF=(FALSE %in% over_t)) #have.tF: booleean - TRUE = gene/tag combi has at least one base pair whose depth is under the threshold (over_thr==FALSE)
 
+length(which(cover_all$over_t==FALSE))/length(cover_all$gene)
+
+#### percentage of bases having a depth <= threshold (how many bases do we get rid off)
 length(which(cov.contig$have.tF==TRUE))/length(cov.contig$gene)
 
 ##### percentage [per gene] of bases having a depth <= threshold
