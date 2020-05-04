@@ -40,16 +40,21 @@ all$col = custom.col[1:length(all$lineage)]
 selected$col = custom.col[1:length(selected$lineage)]
 
 ### All; both Borassus in one group:
-A_B1 = all[-which(all$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
+A_B1 = all[-which(all$lineage == "Borassus_both"),]
 
 ### All; each Borassus in one group
-A_B2 = all[-which(all$lineage == "Borassus_both"),]
+A_B2 = all[-which(all$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
 
-### All; both Borassus in one group:
-S_B1 = all[-which(selected$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
+### Selected; both Borassus in one group:
+S_B1 = all[-which(selected$lineage == "Borassus_both"),]
 
-### All; each Borassus in one group
-S_B2 = all[-which(selected$lineage == "Borassus_both"),]
+
+### Selected; each Borassus in one group
+S_B2 = all[-which(selected$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
+
+###ADD points
+S_B1$midpoint = c(55,11.5,20.5,27,28.5,34.4,1.5,4.5)
+S_B2$midpoint = c(55,11.5,20.5,27,28.5,34.4,19.5)
 
 # Plot --------------------------------------------------------------------
 div_time_plot=function(dataset){
@@ -66,7 +71,8 @@ div_time_plot=function(dataset){
     theme(axis.text.x = element_text(size=20),
           axis.text.y = element_text(size=20))+
     scale_x_continuous(breaks=seq(0, 70, 10))+
-    scale_y_continuous(breaks=seq(0, 5, 1))
+    scale_y_continuous(breaks=seq(0, 5, 1))+
+    geom_point(aes(x=midpoint,y=mg_species_num_log))
 return(g)
 }
 
@@ -136,4 +142,3 @@ pdf(file.path(plot.dir,"S_B1.pdf"))
 div_time_plot(S_B1)
 dev.off()
 
-   

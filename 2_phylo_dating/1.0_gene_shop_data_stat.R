@@ -56,6 +56,9 @@ stats=read.table(output, h=T)
 
 View(stats)
 
+stats_sorted = stats %>%
+  arrange(gnd_disagree_perc, desc(gnd_agree_perc))
+
 # we would like to chose the genes that have:
 #   - the least good nodes disagreeing with sptree
 #   - the most clocklike
