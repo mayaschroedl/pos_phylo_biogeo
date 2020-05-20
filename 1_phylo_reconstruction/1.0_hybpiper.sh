@@ -19,7 +19,7 @@ GWD=$PWD #global working directory, with subprojects and scripts
 WD="$GWD"/1_phylo_reconstruction #current working directory
 
 #TARGET FILE
-TARGET_FILE=$WD/renamed_reads/target_file.fasta
+TARGET_FILE=$WD/input_reads_and_info/target_file.fasta
 
 
 #make a new directories

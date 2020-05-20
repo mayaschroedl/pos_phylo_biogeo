@@ -80,11 +80,17 @@ do $GWD/programs/Gblocks_0.91b/Gblocks $WD/2_alignment/$dir_value$gene"_aligned.
  done < $WD/genelist_7575.txt
 #b5=a: all gap positions allowed
 
-#alignments were manually corrected because some sequences were misaligned.
-
-
 cd $WD/2_alignment/$dir_value
 rename 's/.fasta-gb/_gb.fasta/' * #sudo apt-get install rename
+
+### copy original alignements to new files which will be modified manually
+for file in $WD/2_alignment/$dir_value*_gb.fasta; 
+do cp "$file" ${file/.fasta}_mod.fasta;
+done
+
+#alignments were manually corrected using AliView v 1.26 because some sequences were misaligned.
+
+
 
 rm *.htm
 rm *combined.fasta
