@@ -76,7 +76,7 @@ stats_nogdis = stats[-which(stats$gnd_disagree_perc == 0 & stats$gnd_agree_perc 
 stats_nogdis_sorted = stats_nogdis %>%
  arrange(desc(stats_nogdis$diff_ga_gd))
 
-most_diff = stats_nogdis_sorted$genetree[1:10]
+most_diff = stats_nogdis_sorted$genetree[1:10] #genes with most difference between disagreeing good nodes & agreeing good nodes
 
 #combine no_gdis + most_diff
 no_gdis_most_diff = c(no_gdis, most_diff)
@@ -84,9 +84,9 @@ no_gdis_most_diff = c(no_gdis, most_diff)
 
 # 3) possible clock-like genes (having 0 disagreeing good nodes). These genes need to be tested with Bayes factor beast, to see whether they are really clock-like and can be run with a strict model or not.
 
-#sort stats by ascending root distance
+#sort stats by ascending root-tip variance
 stats_clock = stats[which(stats$genetree %in% no_gdis),] %>% #only have a look at no_gdis genes
-  arrange(dist_root)
+  arrange(root_tip_var)
 
 one_clock = stats_clock$genetree[1] #the "best" gene
 three_clock = stats_clock$genetree[1:3] #the 3 "best" gene

@@ -98,10 +98,10 @@ signal_support_stats=function(genetree, gene_name, sptree, output)
 
   ###  clock-likeness -----
   # Root-tip-variance as proxy of "clock-likeness". Check: Smith, S. A., Brown, J. W., & Walker, J. F. (2018). So many genes, so little time: a practical approach to divergence-time estimation in the genomic era. PloS one, 13(5). https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0197433 
-  dist_root = var(adephylo::distRoot(genetree_original))
+  root_tip_var = var(adephylo::distRoot(genetree_original))
   
   ### Export results ----
-  resultdf=data.frame("genetree" = gene_name, "gnodes_perc" = round(gnodes_perc,3),"nd_agree_perc" = nd_agree_perc, "nd_disagree_perc" = nd_disagree_perc,"gnd_agree_perc" = round(gnd_agree_perc,3),"gnd_disagree_perc" = round(gnd_disagree_perc,3), "gnd_disagree_nbr" = round(gnd_disagree_nbr,3), "diff_ga_gd" = round(gnd_agree_perc - gnd_disagree_perc,3), "dist_root" = round(dist_root*100000,3) )
+  resultdf=data.frame("genetree" = gene_name, "gnodes_perc" = round(gnodes_perc,3),"nd_agree_perc" = nd_agree_perc, "nd_disagree_perc" = nd_disagree_perc,"gnd_agree_perc" = round(gnd_agree_perc,3),"gnd_disagree_perc" = round(gnd_disagree_perc,3), "gnd_disagree_nbr" = round(gnd_disagree_nbr,3), "diff_ga_gd" = round(gnd_agree_perc - gnd_disagree_perc,3), "root_tip_var" = round(root_tip_var*100000,3) )
   
   # if output file exists and is not empty:
   if ((file.exists(output)) & (file.info(output)$size != 0)){

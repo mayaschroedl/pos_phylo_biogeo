@@ -9,18 +9,11 @@
 # Date: 04/2020
 ###########################################################################
 
-rm(list=ls())
+#rm(list=ls())
 
 # Packages ---------------------------------------------------------------
 if (!require('ape')) install.packages('ape'); library('ape')
 if (!require('phylotools')) install.packages('phylotools'); library('phylotools')
-
-# Arguments ---------------------------------------------------------------
-args = commandArgs(trailingOnly=TRUE)
-
-input_tree = args[1]
-output_tree = args[2]
-tag_indiv_df = read.table(args[3],sep="\t",h=T)
 
 # Function -----------------------------------------------------------------
 change_tip_labs=function(input_tree,output_tree,tag_indiv_df){
@@ -39,6 +32,16 @@ change_tip_labs=function(input_tree,output_tree,tag_indiv_df){
   system(paste('sed -i -e "s/:NaN//g"', output_tree))
 }
 
-change_tip_labs(input_tree,output_tree,tag_indiv_df)
+# Arguments ---------------------------------------------------------------
+args = commandArgs(trailingOnly=TRUE)
+
+if(length(args) != 0){
+  input_tree = args[1]
+  output_tree = args[2]
+  tag_indiv_df = read.table(args[3],sep="\t",h=T)
+  change_tip_labs(input_tree,output_tree,tag_indiv_df)
+}
+
+
 
 
