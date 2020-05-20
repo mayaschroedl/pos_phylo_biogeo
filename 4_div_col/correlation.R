@@ -1,18 +1,17 @@
 #!/usr/bin/env Rscript
 ###########################################################################
 # Project: Div_col_palm_Madag
-# Script: interval_regression.R
+# Script: 
 # --- Action: 
 # --- Input: 
 # --- Output:
 # Author: Maya Schroedl
-# Date: 11/2019
 ###########################################################################
 
 rm(list=ls())
 
 # Libraries ---------------------------------------------------------------
-if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
+if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2');theme_set(theme_classic())
 if (!require("RColorBrewer")) install.packages("RColorBrewer"); library("RColorBrewer")
 
 
@@ -52,10 +51,6 @@ S_B1 = all[-which(selected$lineage == "Borassus_both"),]
 ### Selected; each Borassus in one group
 S_B2 = all[-which(selected$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
 
-###ADD points
-S_B1$midpoint = c(55,11.5,20.5,27,28.5,34.4,1.5,4.5)
-S_B2$midpoint = c(55,11.5,20.5,27,28.5,34.4,19.5)
-
 # Plot --------------------------------------------------------------------
 div_time_plot=function(dataset){
   title=deparse(substitute(dataset)) #get input variable name for plot title
@@ -71,13 +66,12 @@ div_time_plot=function(dataset){
     theme(axis.text.x = element_text(size=20),
           axis.text.y = element_text(size=20))+
     scale_x_continuous(breaks=seq(0, 70, 10))+
-    scale_y_continuous(breaks=seq(0, 5, 1))+
-    geom_point(aes(x=midpoint,y=mg_species_num_log))
+    scale_y_continuous(breaks=seq(0, 5, 1))
 return(g)
 }
 
 # Correlation -----------------------------------------------------
-cor_sampling = function(dataset,rep_nb=1000){
+cor_sampling = function(dataset,rep_nb=100000){
   # We want to see how "probable" a correlation is according to these data
   # Therefore, we sample randomly an arrival time for each group on its arrival time interval (when group possibly arrived to Madagascar). For each series (one sample per group), we test the correlation between the log(Malagasy species richness) and the arrival time. This is repeated $sample_num times and then a proportion of significant correlations and significant positive (as expected) correlations is calculated over all repetitions.
   rep_num = rep_nb
@@ -107,11 +101,15 @@ cor_sampling = function(dataset,rep_nb=1000){
 # get correlations for each sampling repetition (row of sample_mat)
 all_cor = sapply(1:rep_nb, cor_test)
 
-# STATS
-sign = length(which(all_cor[2,]<0.05))/rep_nb # percentage of siginficant correlations
-sign_pos = length(which(all_cor[2,]<0.05 && all_cor[1,]>0))/rep_nb # percentage of siginficant positive correlations
+#transform to dataframe
+all_cor_df = as.data.frame(t((all_cor)))
+colnames(all_cor_df) = c("rho", "p")
 
-return(c(sign,sign_pos))
+# STATS
+sign = length(which(all_cor_df$p<0.05))/rep_nb # percentage of siginficant correlations
+sign_pos = length(which(all_cor_df$p<0.05 && all_cor_df$rho>0))/rep_nb # percentage of siginficant positive correlations
+
+return(list(sign,sign_pos,all_cor_df))
 }
 
 
@@ -119,19 +117,24 @@ return(c(sign,sign_pos))
 
 # dataset A_B1: times calculated over all sources + one colonization event for borassus
 div_time_plot(A_B1)
-cor_sampling(A_B1)
+A_B1_cor = cor_sampling(A_B1)
+A_B1_cor[c(1,2)] # percentage of significant correlations; percentage of significant positive correlations
 
 # dataset A_B2: times calculated over all sources + two colonization events for borassus
 div_time_plot(A_B2)
-cor_sampling(A_B2)
+A_B2_cor = cor_sampling(A_B2)
+A_B2_cor[c(1,2)] # percentage of significant correlations; percentage of significant positive correlations
 
 # dataset S_B1: times calculated over selected sources (Bellot in prep. instead of Baker & Couvreur (2013a)) + one colonization event for borassus
 div_time_plot(S_B1)
-cor_sampling(S_B1)
+S_B1_cor = cor_sampling(S_B1)
+S_B1_cor[c(1,2)] # percentage of significant correlations; percentage of significant positive correlations
 
 # dataset S_B2: times calculated over selected sources (Bellot in prep. instead of Baker & Couvreur (2013a)) + one colonization event for borassus
 div_time_plot(S_B2)
-cor_sampling(S_B2)
+S_B2_cor = cor_sampling(S_B2)
+S_B2_cor[c(1,2)] # percentage of significant correlations; percentage of significant positive correlations
+
 
 ###### EXPORT PLOT dataset S_B1
 
@@ -142,3 +145,16 @@ pdf(file.path(plot.dir,"S_B1.pdf"))
 div_time_plot(S_B1)
 dev.off()
 
+##### MAKE HISTOGRAM of slopes dataset S_B1
+##### 
+pdf(file.path(plot.dir,"S_B1_hist.pdf"))
+ggplot(S_B1_cor[3][[1]])+
+  geom_histogram(aes(S_B1_cor[3][[1]]$rho))+
+  xlim(c(-1,1))+
+  xlab("\nPearsons' rho")+
+  ylab("Frequency\n")+
+  theme(text = element_text(size=20))+
+  theme(axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20))
+  
+dev.off()
