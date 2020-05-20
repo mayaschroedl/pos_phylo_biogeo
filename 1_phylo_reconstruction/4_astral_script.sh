@@ -67,34 +67,36 @@ rm *
 #ASTRAL tree with tips representing individuals (individuals of same species are not merged into one species tip)
 
 #execute with branch support as local posterior probabilities (lpp) [default]
-java -jar $GWD/programs/Astral/astral.5.6.3.jar -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_lpp.log
+java -jar $GWD/programs/Astral/astral.5.6.3.jar -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_lpp.log 
+
 
 #execute with branch support as all quartet supports (qs) [-t 8]
 java -jar $GWD/programs/Astral/astral.5.6.3.jar -t 8 -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_qs.log
 
-#bootstrap
-#java -jar $WD/programs/Astral/astral.5.6.3.jar -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll  -b $WD/3_gene_trees/"$dir_value"2_bootstrap  -o $WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.tree 2>$WD/4_coalescent_trees/"$dir_value"coalescent_bstrp.log
+#ASTRAL tree with tips representing species (individuals of same species are merged into one species tip)
 
-######################
-#----LABEL TREES----#
-######################
-Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab $WD/renamed_reads/tags_indiv.txt
+#execute with branch support as local posterior probabilities (lpp) [default]
+java -jar $GWD/programs/Astral/astral.5.6.3.jar -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_idmerg.tree -a $WD/input_reads_and_info/astral_name_mapping.txt 2>$WD/4_coalescent_trees/"$dir_value"coalescent_lpp_idmerg.log 
 
-Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_lab $WD/renamed_reads/tags_indiv.txt
+#execute with branch support as all quartet supports (qs) [-t 8]
+java -jar $GWD/programs/Astral/astral.5.6.3.jar -t 8 -i $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll -o $WD/4_coalescent_trees/"$dir_value"coalescent_qs_idmerg.tree -a $WD/input_reads_and_info/astral_name_mapping.txt 2>$WD/4_coalescent_trees/"$dir_value"coalescent_qs_idmerg.log
+
 
 ######################
 #----REROOT TREES----#
 ######################
 
-#for unlabeled
+#for unlabeled tree of individuals
 Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_rooted $outgroup
  
 Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_rooted  $outgroup
 
-#for labeled
-Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab_rooted $outgroup_lab
+#for species tree
+Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_idmerg.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_idmerg.tree_rooted $outgroup_lab
  
-Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_lab $WD/4_coalescent_trees/"$dir_value"coalescent_qs.tree_lab_rooted  $outgroup_lab
+Rscript $GWD/scripts/general/root_tree.R $WD/4_coalescent_trees/"$dir_value"coalescent_qs_idmerg.tree $WD/4_coalescent_trees/"$dir_value"coalescent_qs_idmerg.tree_rooted  $outgroup_lab
+
+
 
 
 
