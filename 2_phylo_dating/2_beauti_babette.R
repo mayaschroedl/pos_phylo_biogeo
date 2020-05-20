@@ -6,7 +6,6 @@
 # --- Input: concatenated alignments of RF selected gene sequences
 # --- Output: BEAUTi xml file
 # Author: Maya Schroedl
-# Date: 11/2019
 ###########################################################################
 
 # Packages ----------------------------------------------------------------
