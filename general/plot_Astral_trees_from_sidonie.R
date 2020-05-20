@@ -19,7 +19,7 @@ setwd("D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project/1_phylo_recon
 
 
 # import annotated ASTRAL tree (I like to use a tree rooted with pxrr directly after getting it from ASTRAL, before any editing)
-AS_all <- read.astral("coalescent_qs.tree_lab_rooted") #newick tree
+AS_all <- read.astral("coalescent_qs.tree_rooted") #newick tree
 
 # plot and ladderize the tree, without using the ASTRAL branch lengths
 p <- ggtree(AS_all@phylo, ladderize=T, branch.length = "none") + geom_tiplab(size=2.5, hjust= -0.05) + xlim_tree(70) + ggtitle("ASTRAL all regions")
@@ -43,27 +43,7 @@ pies <- nodepie(Q, cols=1:3, color=c(Q1='blue', Q2='green', Q3='red')) #, alpha=
 inset(p, pies, width=0, height=0, hjust=.6)
 
 # pies give the quartet support: percentage of quartets agreeing: 
-# with the branch (red), 
-# with the second alternative RS|LO (cyan), 
-# and with the last alternative RO|LS (gray).
+# with the branch (blue), 
+# with the second alternative RS|LO (green), 
+# and with the last alternative RO|LS (red).
 
-##### plot QS to see their values
-AS_A <- read.astral("coalescent_qs_rooted_lab.tree")
-
-Q1 <- as.numeric(AS_A@data$q1) * 100
-Q <- as.data.frame(Q1)
-Q$Q2 <- as.numeric(AS_A@data$q2) * 100
-Q$Q3 <- as.numeric(AS_A@data$q3) * 100
-Q$node <- AS_A@data$node
-node <- AS_A@data$node
-allQS <- as.data.frame(node)
-for (x in (1:length(allQS$node))) {allQS$QS[x] <- paste(round(Q$Q1[x]), "_", round(Q$Q2[x]), "_", round(Q$Q3[x]), sep = "")}
-
-pP <- ggtree(AS_A@phylo, ladderize=T, branch.length = "none") %<+% allQS + 
-  geom_nodelab(aes(x=branch, label=QS), vjust=-0.5, size=3) +
-  geom_tiplab(size=3, hjust= -0.05) + xlim_tree(70) + 
-  ggtitle("ASTRAL, plastid regions")
-
-pdf("ASTRAL_BP10_QSvalues.pdf", 15, 15)
-plot_grid(pP, pN, ncol=2)
-dev.off()
