@@ -11,30 +11,69 @@ gwd=getwd() # global working directory
 wd=file.path(getwd(),"1_phylo_reconstruction") #local working directory
 t=2 # threshold
 
-# Make directories --------------------------------------------------------
+# Directories --------------------------------------------------------
 dir_plots_phylo=file.path(gwd,"plots","phylogenies")
 if (!dir.exists(dir_plots_phylo)){dir.create(dir_plots_phylo, recursive=T)}
 
 # Species tree -------------------------------------------------------------
-sptree_unrooted=file.path(wd, "4_coalescent_trees", t, "coalescent_lpp.tree")
-tree_unrooted=read.tree(sptree_unrooted)
+# Lpp unrooted
+pdf(file.path(dir_plots_phylo,"coalescent_lpp_unrooted.pdf"))
 
-#root tree
-tree_rooted=root(tree_unrooted, "Dypsis_mananjarensis", edgelabel = T)
+sptree_unrooted_file=file.path(wd, "4_coalescent_trees", t, "coalescent_lpp_idmerg.tree")
+tree_unrooted=read.tree(sptree_unrooted_file)
 
-#show as node labels
 plot.phylo(tree_unrooted, main= "unrooted")
-nodelabels(text=tree_unrooted$node.label, frame="none", col = "red")
+nodelabels(text=tree_unrooted$node.label, frame="none")
+
+dev.off()
+
+# Lpp rooted
+
+pdf(file.path(dir_plots_phylo,"coalescent_lpp_rooted_mod.pdf"))
+
+sptree_rooted_file=file.path(wd, "4_coalescent_trees", t, "mod", "coalescent_lpp_idmerg.tree_rooted")
+tree_rooted=read.tree(sptree_rooted_file)
 
 plot.phylo(tree_rooted, main= "rooted")
-nodelabels(text=tree_rooted$node.label, frame="none",col = "red")
+nodelabels(text=tree_rooted$node.label, frame="none")
 
-#show as edge labels
-plot.phylo(tree_unrooted, main= "unrooted")
-edgelabels(text=tree_unrooted$node.label, frame="none", col = "red")
+dev.off()
 
-plot.phylo(tree_rooted, main= "rooted")
-edgelabels(text=tree_rooted$node.label, frame="none",col = "red")
+
+# Gene trees --------------------------------------------------------------
+
+genelist = read.table(file.path(wd, "genelist_7575.txt"))[,1]
+
+pdf(file.path(dir_plots_phylo,"genetrees_rooted.pdf"))
+for (gene in genelist){
+  
+  genetree_rooted_file=file.path(wd, "3_gene_trees", t, "4_collapsed", paste0(gene, ".raxml.support.coll_lab_rooted"))
+  tree_rooted=read.tree(genetree_rooted_file)
+  
+  plot.phylo(tree_rooted, main= gene)
+  nodelabels(text=tree_rooted$node.label, frame="none")
+  
+}
+
+dev.off()
+
+
+# Genes selected for dating -----------------------------------------------
+
+genelist = read.table(file.path(gwd, "2_phylo_dating","1_gene_shop","selected_genes", "no_gdis.txt"))[,1]
+
+pdf(file.path(dir_plots_phylo,"no_gdis_rooted.pdf"))
+for (gene in genelist){
+  
+  genetree_rooted_file=file.path(wd, "3_gene_trees", t, "4_collapsed", paste0(gene, ".raxml.support.coll_lab_rooted"))
+  tree_rooted=read.tree(genetree_rooted_file)
+  
+  plot.phylo(tree_rooted, main= gene)
+  nodelabels(text=tree_rooted$node.label, frame="none")
+  
+}
+
+dev.off()
 
 
 # ggtree(tree)+
@@ -47,7 +86,4 @@ edgelabels(text=tree_rooted$node.label, frame="none",col = "red")
 #   #geom_cladelabel(node=48, label="Africa", align=T, color='blue', offset = 5) +
 #   #geom_cladelabel(node=31, label="SE Asia", align=T, color='green', offset = 5)
 
-
-sptree_rooted=file.path(wd, "4_coalescent_trees", t, "coalescent_lpp_rooted.tree")
-tree_rooted=read.tree(sptree_rooted)
 
