@@ -12,7 +12,7 @@
 rm(list=ls())
 
 # Functions ------------------------------------------------------------------
-source(file.path(getwd(), "scripts", "2_phylo_dating","1.0_gene_shop_fct.R"))
+source(file.path(getwd(), "scripts", "2_phylo_dating","1.4_gene_shop_fct.R"))
 
 
 # Libraries ---------------------------------------------------------------
@@ -26,17 +26,20 @@ wd = getwd()
 
 ### Input ---
 ## Rooted gene trees ----
-genetrees_folder = file.path(wd, "1_phylo_reconstruction", "3_gene_trees", "2", "4_collapsed") #where are the gene trees
+genetrees_folder = file.path(wd, "2_phylo_dating", "2_astral_gene_trees","gene_trees_drop") #where are the gene trees
 gene_list = read.table(file.path(wd, "1_phylo_reconstruction", "genelist_7575.txt"))[,1] #list of all the genes
-suffix = ".raxml.support.coll_rooted" #how are the gene tree files named
+suffix = "_drop.tree" #how are the gene tree files named
  
 ## Rooted species tree ----
-sptree_file = file.path(wd, "1_phylo_reconstruction","4_coalescent_trees", "2","coalescent_lpp.tree_rooted" ) #where is the species tree
+sptree_file = file.path(wd, "2_phylo_dating","2_astral_gene_trees","astral_for_dating.tree" ) #where is the species tree
 
 sptree = read.tree(sptree_file) #read species tree
 
 ### Output ----
-output = file.path(wd, "2_phylo_dating","1_gene_shop","my_genetrees.stats")
+gene_shop_dir = file.path(wd, "2_phylo_dating","3_gene_shop")
+if (!dir.exists(gene_shop_dir)){dir.create(gene_shop_dir)}
+### 
+output = file.path(gene_shop_dir,"geneshopping.stats")
 
 #### Get distances ----
 if (file.exists(output)){file.remove(output)} #delete output file
@@ -54,10 +57,10 @@ for (gene in gene_list){
 
 stats=read.table(output, h=T)
 
-View(stats)
-
 stats_sorted = stats %>%
   arrange(gnd_disagree_perc, desc(gnd_agree_perc))
+
+View(stats_sorted)
 
 # we would like to chose the genes that have:
 #   - the least good nodes disagreeing with sptree
@@ -66,6 +69,17 @@ stats_sorted = stats %>%
 #####
 # 1) Genes with 0 disagreeing good nodes
 no_gdis = stats$genetree[which(stats$gnd_disagree_perc == 0 & stats$gnd_agree_perc != 0)]
+
+
+# 2) possible clock-like genes (having 0 disagreeing good nodes). These genes need to be tested with Bayes factor beast, to see whether they are really clock-like and can be run with a strict model or not.
+
+#sort stats by ascending root-tip variance
+stats_clock = stats[which(stats$genetree %in% no_gdis),] %>% #only have a look at no_gdis genes
+  arrange(root_tip_var)
+
+one_clock = stats_clock$genetree[1] #the "best" gene
+
+#-----------------------------------
 
 # 2) no_gdis + genes with most difference between disagreeing good nodes & agreeing good nodes
 
@@ -93,11 +107,11 @@ three_clock = stats_clock$genetree[1:3] #the 3 "best" gene
 nine_clock = stats_clock$genetree[1:9] #the 9 "best" gene
 
 # Write selected genes to files -------------------------------------------
-selected_dir = file.path(wd,"2_phylo_dating","1_gene_shop","selected_genes")
+selected_dir = file.path(wd,"2_phylo_dating","3_gene_shop","selected_genes")
 if (!dir.exists(selected_dir)){dir.create(selected_dir)}
 
 write.table(no_gdis, file.path(selected_dir,"no_gdis.txt"),col.names=F,row.names = F,quote=F)
-write.table(no_gdis_most_diff, file.path(selected_dir,"most_diff.txt"),col.names=F,row.names = F,quote=F)
+#write.table(no_gdis_most_diff, file.path(selected_dir,"most_diff.txt"),col.names=F,row.names = F,quote=F)
 write.table(one_clock, file.path(selected_dir,"clock_one.txt"),col.names=F,row.names = F,quote=F)
-write.table(three_clock, file.path(selected_dir,"clock_three.txt"),col.names=F,row.names = F,quote=F)
-write.table(nine_clock, file.path(selected_dir,"clock_nine.txt"),col.names=F,row.names = F,quote=F)
+#write.table(three_clock, file.path(selected_dir,"clock_three.txt"),col.names=F,row.names = F,quote=F)
+#write.table(nine_clock, file.path(selected_dir,"clock_nine.txt"),col.names=F,row.names = F,quote=F)

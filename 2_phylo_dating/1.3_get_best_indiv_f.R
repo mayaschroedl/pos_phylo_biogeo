@@ -1,7 +1,7 @@
 ###########################################################################
 # Project: Orania Phylogeny MT
 # Script: beast_babette.R
-# --- Action: for the species where we have two sequences, we will only chose the sequence with the "most-informative" alignments (least "-" and "n") for dating
+# --- Action: for the species where we have two sequences, we will only chose the sequence with the alignments with least gaps (for monophyletic sequences) for dating and two sequences for non-monophyletic sequences
 # --- Input: 
 # --- Output: 
 # Author: Maya Schroedl
@@ -24,53 +24,15 @@ wd = file.path(getwd(),"2_phylo_dating")
 
 t = 2 #coverage trimming threshold
 
-
-
-# Get double names -------------------------------------------------------------------
-tag_sp_indiv = read.table(file.path(gwd,"1_phylo_reconstruction","input_reads_and_info","tags_indiv.txt"),h=T, stringsAsFactors = F) #table with which tag corresponds to which species
-
-# Astral tree -------------------------------------------------------------
-
-astral_idmerg = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp_idmerg.tree_rooted" ))
-
-plot(astral_idmerg, main = "Astral tree of species")
-nodelabels(astral_idmerg$node.label, frame= "none")
-
-astral_dir = file.path(wd, "2_astral_tree")
-
-if (!dir.exists(astral_dir)){dir.create(astral_dir)}
-
-file.copy(file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp.tree_rooted" ),astral_dir)
-
-
-#change tip labels
-source(file.path(gwd,"scripts","general","change_tiplabels.R"))
-
-change_tip_labs(file.path(astral_dir,"coalescent_lpp.tree_rooted"), file.path(astral_dir,"coalescent_lpp.tree_lab_rooted"),tag_sp_indiv)
-
-astral_sp = read.tree(file.path(astral_dir,"coalescent_lpp.tree_lab_rooted"))
-
-plot(astral_sp, main = "Astral tree of individuals")
-nodelabels(astral_sp$node.label, frame= "none")
-
-
-
-# get indiv most similar to astral tree in top ----------------------------
-
-# we exclude those sequences that are placed in a different place in the astral tree without merged individuals (coalescent_lpp.tree_rooted) than in the astral tree where indivs are merged (coalescent_lpp_imerg.tree_rooted) [astral "-a" option]
-
-# in our case, this is Orania_palidan_2 (TAG-26)
-
-# one special case in Orania lauterbachiana. All three individual sequences are in a different place in coalescent_lpp.tree_rooted than in coalescent_lpp_imerg.tree_rooted. I did not find what the astral "-a" option exactly does, so I do not know how it deals with individuals that are in very different positions (as here in Orania lauterbachiana).
-# Because Orania lauterbachiana has two individuals that occuras a sister group to O. tabubilensis, and only one [O. lauterbachiana_3] that is sister to O. deflexa/archboldiana/macropetala, we excluded this last individual.
-
-
-
 # Get best alignments for double names -------------------------------------------------
 
-all_alignments_concat = read.fasta(file.path(wd, "1_alignment", "concat", "all_genes_concat.fasta"))
+# Get double names 
+tag_sp = read.table(file.path(gwd,"1_phylo_reconstruction","input_reads_and_info","tags_indiv_sp.txt"),h=T, stringsAsFactors = F) #table with which tag corresponds to which species
 
-perc_empty = function(indiv_num){
+# Get alignments
+all_alignments_concat = read.fasta(file.path(wd, "1_alignment", "concat", "all_genes_concat.fasta")) #get concatenated alignments for all individuals
+
+get_gap_perc = function(indiv_num){ #get per individuum the percentage of gaps in alignment
   indiv_name = attr(all_alignments_concat[indiv_num],"name")
   empty = length(which(all_alignments_concat[indiv_num][[1]]=="-"))+length(which(all_alignments_concat[indiv_num][[1]]=="n"))
   
@@ -80,56 +42,72 @@ perc_empty = function(indiv_num){
 }
 
 
-all_names_pe = data.frame(do.call("rbind", lapply(1:length(all_alignments_concat), perc_empty)))
+gap_perc = data.frame(do.call("rbind", lapply(1:length(all_alignments_concat), get_gap_perc)))
+
+colnames(gap_perc) = c("tags","gap_perc")
+
+gap_perc_merg = merge(gap_perc,tag_sp, by="tags") #merge with corresponding names
 
 
+### GET THE INDIVIDUAL WITH THE LOWEST NUMBER OF GAPS IN ALIGNMENT
+### Except for O. lauterbachiana & O. palindan. Because their individuals are not monophyletic. 
+
+gap_perc_merg_without_ol_op = gap_perc_merg[-which(gap_perc_merg$indiv %in% c("Orania_lauterbachiana","Orania_palindan")),]
 
 
-# Best alignments for double names ----------------------------------------
+filtered_list_of_indiv = gap_perc_merg_without_ol_op %>%
+  group_by(indiv) %>%
+  summarize(gap_perc_min = min(gap_perc), tag_min = tags[which.min(gap_perc)])
 
-get_best = function(elem){
-  return(
-    all_names_pe[,1][which(all_names_pe[,1] %in% elem)
-                     [which.max(all_names_pe[,2]
-                                [which(all_names_pe[,1] %in% elem)
-                                  ]
-                     )
-                       ]
-                     ]
-    
-  )
-}
+final_vector_indiv = filtered_list_of_indiv$tag_min
 
-list2 = c()
-len = length(list)
-for (i in 1:len){
-  elem = list[[i]][[2]]
-  list2 = c(list2,as.character(get_best(elem)))
-}
+## for O. palidan: keep both because only two individuals
 
-##### astral tree
+final_vector_indiv = c(final_vector_indiv, tag_sp$tags[which(tag_sp$indiv == "Orania_palindan")])
 
-# drop tips that are not in list2
+## for O. lauterbachiana: keep TAG-24; and the one with the least gaps of the monophyletic group (TAG-22,TAG-23)
+
+gap_perc_merg_laut_1_2 = gap_perc_merg[which(gap_perc_merg$tags %in% c("TAG-22","TAG-23")),]
+laut_1_2_min = gap_perc_merg_laut_1_2$tags[which.min(gap_perc_merg_laut_1_2$gap_perc)]
+
+final_vector_indiv = c(final_vector_indiv, "TAG-24", laut_1_2_min)
 
 
+# Astral trees -------------------------------------------------------------
+astral_gene_dir = file.path(wd, "2_astral_gene_trees")
+if (!dir.exists(astral_gene_dir)){dir.create(astral_gene_dir)}
+
+astral_tree = read.tree(file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees","2", "coalescent_lpp.tree_rooted"))
+
+# drop tips that are not in final_vector_indiv
 
 #which tips shall be droped:
-drop_these = tag_sp$tags[which(tag_sp$tags %!in% list2)]
+drop_these = tag_sp$tags[which(tag_sp$tags %!in% final_vector_indiv)]
+
+write.table(drop_these, file.path(astral_gene_dir, "astral_dropped_tags.txt"),row.names = F,col.names = F,quote = F)
 
 astral_dropped = drop.tip(astral_tree,drop_these)
 
-write.tree(astral_dropped, file.path(astral_dir,"coalescent_lpp_drop.tree_rooted"))
+#write tree for dating
+write.tree(astral_dropped, file.path(astral_gene_dir,"astral_for_dating.tree"))
 
 
-#change tip labels
-source(file.path(gwd,"scripts","general","change_tiplabels.R"))
+# Gene trees --------------------------------------------------------------
+# 
+gene_dir = file.path(wd, "2_astral_gene_trees","gene_trees_drop")
+if (!dir.exists(gene_dir)){dir.create(gene_dir)}
 
-change_tip_labs(file.path(astral_dir,"coalescent_lpp_drop.tree_rooted"), file.path(astral_dir,"coalescent_lpp_drop.tree_lab_rooted"),tag_sp)
+# drop tips in genetree (so we can compare genetree - sptree)
+genetrees_folder = file.path(gwd, "1_phylo_reconstruction", "3_gene_trees", "2", "4_collapsed") #where are the gene trees
+gene_list = read.table(file.path(gwd, "1_phylo_reconstruction", "genelist_7575.txt"))[,1] #list of all the genes
+suffix = ".raxml.support.coll_rooted" #how are the gene tree files named
 
 
-plot(read.tree(file.path(astral_dir,"coalescent_lpp_drop.tree_lab_rooted")))
-
-plot(read.tree(file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp_idmerg.tree_rooted" )))
+for (gene in gene_list){
+  genetree = read.tree(file.path(genetrees_folder,paste0(gene, suffix)))
+  genetree_dropped = drop.tip(genetree,drop_these)
+  write.tree(genetree_dropped, file.path(gene_dir, paste0(gene, "_drop.tree")))
+}
 
 
 

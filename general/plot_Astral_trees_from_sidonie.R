@@ -14,15 +14,14 @@ library(treeio) #read.astral function
 
 setwd("D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project/1_phylo_reconstruction/4_coalescent_trees/2") # set the working directory to the folder containing your tree
 
-
-########### Example plot pie charts with Q scores on ASTRAL topologies
-
+### FUNCTION
 
 # import annotated ASTRAL tree (I like to use a tree rooted with pxrr directly after getting it from ASTRAL, before any editing)
-AS_all <- read.astral("coalescent_qs.tree_rooted") #newick tree
 
+
+astral_plot_qs_parts = function(AS_all){
 # plot and ladderize the tree, without using the ASTRAL branch lengths
-p <- ggtree(AS_all@phylo, ladderize=T, branch.length = "none") + geom_tiplab(size=2.5, hjust= -0.05) + xlim_tree(70) + ggtitle("ASTRAL all regions")
+p <- ggtree(AS_all@phylo, ladderize=T, branch.length = "none") + geom_tiplab(size=2.5, hjust= -0.05) + xlim_tree(70)# + ggtitle("Astral tree of species QS parts")
 
 # check node labels if necessary
 #p + geom_text2(aes(subset=!isTip, label=node), hjust=-.3, size = 4)
@@ -46,4 +45,21 @@ inset(p, pies, width=0, height=0, hjust=.6)
 # with the branch (blue), 
 # with the second alternative RS|LO (green), 
 # and with the last alternative RO|LS (red).
+}
 
+
+setwd("D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project/plots/phylogenies")
+
+#dev.off()
+#pdf("ASTRAL_qs_parts.pdf")
+############FOR SPECIES tree
+setwd("D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project/1_phylo_reconstruction/4_coalescent_trees/2")
+sp_tree <- read.astral("coalescent_qs_all_idmerg.tree_rooted") #newick tree
+astral_plot_qs_parts(sp_tree) + ggtitle("Astral tree of species QS part")
+
+############FOR INDIVIDUALS tree
+setwd("D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project/1_phylo_reconstruction/4_coalescent_trees/2")
+indiv_tree <- read.astral("coalescent_qs_all.tree_lab_rooted") #newick tree
+astral_plot_qs_parts(indiv_tree) + ggtitle("Astral tree of individuals QS part")
+
+#dev.off()

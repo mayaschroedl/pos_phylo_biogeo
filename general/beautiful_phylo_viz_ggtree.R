@@ -15,29 +15,41 @@ t=2 # threshold
 dir_plots_phylo=file.path(gwd,"plots","phylogenies")
 if (!dir.exists(dir_plots_phylo)){dir.create(dir_plots_phylo, recursive=T)}
 
-# Species tree -------------------------------------------------------------
-# Lpp unrooted
-pdf(file.path(dir_plots_phylo,"coalescent_lpp_unrooted.pdf"))
+# Astral trees -------------------------------------------------------------
+#dev.off()
+#pdf(file.path(gwd,"plots","phylogenies","all_astral_trees.pdf"))
+### ASTRAL IDMERG
+#qs
+astral_idmerg_qs = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_qs_idmerg.tree_rooted" ))
 
-sptree_unrooted_file=file.path(wd, "4_coalescent_trees", t, "coalescent_lpp_idmerg.tree")
-tree_unrooted=read.tree(sptree_unrooted_file)
+plot(astral_idmerg_qs, main = "Astral tree of species QS")
+nodelabels(astral_idmerg_qs$node.label, frame= "none")
 
-plot.phylo(tree_unrooted, main= "unrooted")
-nodelabels(text=tree_unrooted$node.label, frame="none")
 
-dev.off()
+#lpp
+astral_idmerg_lpp = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp_idmerg.tree_rooted" ))
 
-# Lpp rooted
+plot(astral_idmerg_lpp, main = "Astral tree of species LP")
+nodelabels(astral_idmerg_lpp$node.label, frame= "none")
 
-pdf(file.path(dir_plots_phylo,"coalescent_lpp_rooted_mod.pdf"))
 
-sptree_rooted_file=file.path(wd, "4_coalescent_trees", t, "mod", "coalescent_lpp_idmerg.tree_rooted")
-tree_rooted=read.tree(sptree_rooted_file)
+### ASTRAL INDIV
+#qs
+astral_indiv_qs = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_qs.tree_lab_rooted" ))
 
-plot.phylo(tree_rooted, main= "rooted")
-nodelabels(text=tree_rooted$node.label, frame="none")
+plot(astral_indiv_qs, main = "Astral tree of individuals QS")
+add.scale.bar()
+nodelabels(astral_indiv_qs$node.label, frame= "none")
 
-dev.off()
+#lpp
+astral_indiv_lpp = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp.tree_lab_rooted" ))
+
+plot(astral_indiv_lpp, main = "Astral tree of individuals LPP")
+add.scale.bar()
+nodelabels(astral_indiv_lpp$node.label, frame= "none")
+
+#dev.off()
+
 
 
 # Gene trees --------------------------------------------------------------

@@ -14,22 +14,24 @@ rm(list=ls())
 if (!require('ape')) install.packages('ape'); library('ape')
 if (!require('geiger')) install.packages('geiger'); library('geiger')
 if (!require('phytools')) install.packages('phytools'); library('phytools')
-
+if (!require('treeio')) install.packages('treeio'); library('treeio')
 
 # Working directory -------------------------------------------------------
 wd = getwd()
 
 # Input & output -------------------------------------------------------------
-input = file.path("1_phylo_reconstruction","4_coalescent_trees","2","coalescent_lpp.tree_rooted")
+tree_dir = file.path(wd, "2_phylo_dating", "2_astral_gene_trees")
 
-output = file.path(wd, "2_phylo_dating", "3_babette","coalescent_lpp_chronopl.tree_rooted")
+input = file.path(tree_dir,"astral_for_dating.tree")
+
+output = file.path(tree_dir,"chronopl_starting.tree")
                    
 # Astral tree -------------------------------------------------------------
-astral_tree <- read.tree(input)
+astral_tree = read.astral(input)@phylo
 plot(astral_tree, cex = 0.5)
 
 #Get nodes of interest for dating
-calib_node = mrca(astral_tree)["TAG-32","TAG-47"] #we will calibrate the root
+calib_node = mrca(astral_tree)["TAG-22","TAG-47"] #we will calibrate the root
 
 ######################################################################################
 #chronopl explanation
@@ -71,3 +73,4 @@ write.tree(calib_starting_r, file = output)
 
 #Remove "Root" label
 system(paste('sed -i "s/Root//g"', output))
+
