@@ -7,11 +7,7 @@ library(parallel)
 library(rexpokit)
 library(BioGeoBEARS)
 
-name="or,orscldyp,sclpod"
-cons="unconstrained"
-
-
-setwd(paste0("D:/ONEDRIVE_AU/OneDrive - Aarhus Universitet/Orania_project/4_biogeography/biogeobears/calib/"))
+wd = getwd()
 
 extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))
 extdata_dir
@@ -27,11 +23,22 @@ list.files(extdata_dir)
 #tr_nodyp=drop.tip(tr,"Dypsis_mananjarensis")
 #write.tree(tr_nodyp,"or,orscldyp,sclpod_RF_selected_concat_cons_R_calib_lab_nodyp.tre")
 
-trfn = paste0("or,orscldyp,sclpod_RF_selected_concat_cons_R_calib_lab_nodyp.tre")
+#change tip labels
+source(file.path(wd,"scripts","general","change_tiplabels.R"))
+change_tip_labs(file.path(wd,"3_biogeography","biogeobears","last","no_gdis_concat_not_ready_nw.tree")
+                , file.path(wd,"3_biogeography","biogeobears","last","no_gdis_concat_not_ready_nw_lab.tree"),
+                file.path(wd, "2_phylo_dating","tags_indiv_dating.txt")) #works only in unix
+
+
+trfn = file.path(wd,"3_biogeography","biogeobears","last","no_gdis_concat_not_ready_nw_lab.tree")
 tr = read.tree(trfn)
 plot(tr)
+tr= drop.tip(tr, "Dypsis_mananjarensis")
+write.tree(tr, file.path(wd,"3_biogeography","biogeobears","last","no_gdis_concat_not_ready_nw_lab_drop.tree"))
 
-geogfn = "states.phylip"
+trfn = file.path(wd,"3_biogeography","biogeobears","last","no_gdis_concat_not_ready_nw_lab_drop.tree")
+
+geogfn = file.path(wd,"3_biogeography","biogeobears","last","states.phylip")
 
 # # Look at your geographic range data:
 tipranges = getranges_from_LagrangePHYLIP(lgdata_fn=geogfn)
@@ -105,7 +112,7 @@ check_BioGeoBEARS_run(BioGeoBEARS_run_object)
 # For a slow analysis, run once, then set runslow=FALSE to just 
 # load the saved result.
 runslow = TRUE
-resfn = paste0(name,"_DEC_",cons,".Rdata")
+resfn = paste0("DEC_",cons,".Rdata")
 if (runslow)
 {
   res = bears_optim_run(BioGeoBEARS_run_object)

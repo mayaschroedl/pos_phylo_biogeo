@@ -19,38 +19,42 @@ if (!dir.exists(dir_plots_phylo)){dir.create(dir_plots_phylo, recursive=T)}
 #dev.off()
 #pdf(file.path(gwd,"plots","phylogenies","all_astral_trees.pdf"))
 ### ASTRAL IDMERG
-#qs
-astral_idmerg_qs = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_qs_idmerg.tree_rooted" ))
-
-plot(astral_idmerg_qs, main = "Astral tree of species QS")
-nodelabels(astral_idmerg_qs$node.label, frame= "none")
-
-
+dev.off()
+svg(file.path(gwd,"plots","phylogenies","astral_sp_final.svg"))
 #lpp
 astral_idmerg_lpp = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp_idmerg.tree_rooted" ))
 
-plot(astral_idmerg_lpp, main = "Astral tree of species LP")
-nodelabels(astral_idmerg_lpp$node.label, frame= "none")
+p=ggtree(astral_idmerg_lpp)+geom_tiplab(offset = .9, hjust = .5)#+geom_text2(aes(subset = !isTip, label=label))
+
+p = rotate(p,20)
+p = rotate(p,22)
+p = rotate(p,31)
+
+p
+
+#plot(astral_idmerg_lpp, main = "Astral tree of species LP", use.edge.length = T)
+#nodelabels(astral_idmerg_lpp$node.label, frame= "none")
+
+dev.off()
 
 
 ### ASTRAL INDIV
-#qs
-astral_indiv_qs = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_qs.tree_lab_rooted" ))
-
-plot(astral_indiv_qs, main = "Astral tree of individuals QS")
-add.scale.bar()
-nodelabels(astral_indiv_qs$node.label, frame= "none")
-
+dev.off()
+svg(file.path(gwd,"plots","phylogenies","astral_indiv_final.svg"))
 #lpp
-astral_indiv_lpp = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp.tree_lab_rooted" ))
+astral_idmerg_lpp = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp.tree_lab_rooted" ))
 
-plot(astral_indiv_lpp, main = "Astral tree of individuals LPP")
-add.scale.bar()
-nodelabels(astral_indiv_lpp$node.label, frame= "none")
+p=ggtree(astral_idmerg_lpp)+geom_tiplab(offset = .9, hjust = .5)#+geom_text2(aes(subset = !isTip, label=label))
 
-#dev.off()
+p = rotate(p,29)
+p = rotate(p,30)
+p = rotate(p,50)
+p = rotate(p,37)
+p = rotate(p,48)
 
+p
 
+dev.off()
 
 # Gene trees --------------------------------------------------------------
 

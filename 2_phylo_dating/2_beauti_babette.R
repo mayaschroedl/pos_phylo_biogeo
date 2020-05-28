@@ -39,7 +39,7 @@ create_beast2_input_file(
   mrca_prior=create_mrca_prior(
     is_monophyletic=T,
     mrca_distr=create_normal_distr(
-      mean=create_mean_param(57),
+      mean=create_mean_param(value = 57),
       sigma=create_sigma_param(value=6.12))),
   site_model=create_hky_site_model(),
   clock_model=create_rln_clock_model(),
@@ -47,10 +47,6 @@ create_beast2_input_file(
 )
 
 #### ADD MANUALLY:####
-
-# sometimes "mean=create_mean_param(57)" does not work 
-# --> replace: "<parameter id="RealParameter.57" estimate="false" name="mean">0</parameter>" 
-# --> with: "<parameter id="RealParameter.57" estimate="false" name="mean">57</parameter>"
 
 ### MULTI MONOPHYLETIC CONSTRAINT (MMC)
 
@@ -82,7 +78,7 @@ create_beast2_input_file(
   mrca_prior=create_mrca_prior(
     is_monophyletic=T,
     mrca_distr=create_normal_distr(
-      mean=create_mean_param(57),
+      mean=create_mean_param(value = 57),
       sigma=create_sigma_param(value=6.12))),
   site_model=create_hky_site_model(),
   clock_model=create_rln_clock_model(),
@@ -92,30 +88,6 @@ create_beast2_input_file(
 #### ADD MANUALLY:####
 
 # like above
-
-# Genes with some discordant good nodes -----------------------------------
-# addititionally to no_gdis, here are the genes that have the greatest difference between the number of good nodes agreeing & disagreeing (see script gene_shop.R)
-
-most_diff_fsta = file.path(wd, "1_alignment","concat", "most_diff_concat.fasta")
-most_diff_xml_out = file.path(wd, "4_babette", "most_diff_concat.xml")
-
-#BEAUTi
-create_beast2_input_file(
-  input_filename = most_diff_fsta,
-  output_filename = most_diff_xml_out,
-  mcmc=create_mcmc(chain_length = 10000000, store_every = 10000),
-  mrca_prior=create_mrca_prior(
-    is_monophyletic=T,
-    mrca_distr=create_normal_distr(
-      mean=create_mean_param(57),
-      sigma=create_sigma_param(value=6.12))),
-  site_model=create_hky_site_model(),
-  clock_model=create_rln_clock_model(),
-  tree_prior=create_yule_tree_prior()
-)
-
-#### ADD MANUALLY:####
-#like above
 
 
 # Model Selection ---------------------------------------------------------
@@ -134,19 +106,15 @@ create_beast2_input_file(
   input_filename = clock_fsta,
   output_filename = clock_relaxed_xml_out,
   mcmc=create_mcmc(chain_length = 10000000, store_every = 10000),
-  #mrca_prior=create_mrca_prior(
-   # is_monophyletic=T,
-   # mrca_distr=create_normal_distr(
-   #   mean=create_mean_param(57),
-   #   sigma=create_sigma_param(value=6.12))),
+  mrca_prior=create_mrca_prior(
+   is_monophyletic=T,
+   mrca_distr=create_normal_distr(
+   mean=create_mean_param(value = 57),
+   sigma=create_sigma_param(value=6.12))),
   site_model=create_hky_site_model(),
   clock_model=create_rln_clock_model(), #RELAXED MODEL
   tree_prior=create_yule_tree_prior()
 )
-
-# sometimes "mean=create_mean_param(57)" does not work 
-# --> replace: "<parameter id="RealParameter.57" estimate="false" name="mean">0</parameter>" 
-# --> with: "<parameter id="RealParameter.57" estimate="false" name="mean">57</parameter>"
 
 # replace all "clock_one_concat" to "clock_one_relaxed" in doc
 
@@ -166,16 +134,12 @@ create_beast2_input_file(
   mrca_prior=create_mrca_prior(
     is_monophyletic=T,
     mrca_distr=create_normal_distr(
-      mean=create_mean_param(57),
+      mean=create_mean_param(value = 57),
       sigma=create_sigma_param(value=6.12))),
   site_model=create_hky_site_model(),
   clock_model=create_strict_clock_model(), #STRICT MODEL
   tree_prior=create_yule_tree_prior()
 )
-
-# sometimes "mean=create_mean_param(57)" does not work 
-# --> replace: "<parameter id="RealParameter.57" estimate="false" name="mean">0</parameter>" 
-# --> with: "<parameter id="RealParameter.57" estimate="false" name="mean">57</parameter>"
 
 # replace all "clock_one_concat" to "clock_one_strict" in doc
 
@@ -185,140 +149,6 @@ create_beast2_input_file(
 # replace : <run id="mcmc" spec="MCMC" chainLength="1000000">
 # with : <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
 # 
-# 
-
-
-
-###### THREE POSSIBLE CLOCK-LIKE GENES #####
-
-clock_fsta = file.path(wd, "1_alignment","concat", "clock_three_concat.fasta")
-
-## Relaxed clock ----
-clock_relaxed_xml_out = file.path(wd, "4_babette", "clock_three_relaxed_mods.xml")
-
-#BEAUTi
-create_beast2_input_file(
-  input_filename = clock_fsta,
-  output_filename = clock_relaxed_xml_out,
-  mcmc=create_mcmc(chain_length = 10000000, store_every = 10000),
-  mrca_prior=create_mrca_prior(
-    is_monophyletic=T,
-    mrca_distr=create_normal_distr(
-      mean=create_mean_param(57),
-      sigma=create_sigma_param(value=6.12))),
-  site_model=create_hky_site_model(),
-  clock_model=create_rln_clock_model(), #RELAXED MODEL
-  tree_prior=create_yule_tree_prior()
-)
-
-# sometimes "mean=create_mean_param(57)" does not work 
-# --> replace: "<parameter id="RealParameter.57" estimate="false" name="mean">0</parameter>" 
-# --> with: "<parameter id="RealParameter.57" estimate="false" name="mean">57</parameter>"
-
-# replace all "clock_three_concat" to "clock_three_relaxed" in doc
-
-# !! ADD MMC + STARTING TREE MANUALLY (see above)
-
-### FOR MODEL SELECTION:
-# replace : <run id="mcmc" spec="MCMC" chainLength="1000000">
-# with : <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
-
-## Strict clock ----
-clock_strict_xml_out = file.path(wd, "4_babette", "clock_three_strict_mods.xml")
-
-create_beast2_input_file(
-  input_filename = clock_fsta,
-  output_filename = clock_strict_xml_out,
-  mcmc=create_mcmc(chain_length = 10000000, store_every = 10000),
-  #mrca_prior=create_mrca_prior(
-   # is_monophyletic=T,
-   # mrca_distr=create_normal_distr(
-   #   mean=create_mean_param(57),
-   #   sigma=create_sigma_param(value=6.12))),
-  site_model=create_hky_site_model(),
-  clock_model=create_strict_clock_model(), #STRICT MODEL
-  tree_prior=create_yule_tree_prior()
-)
-
-# sometimes "mean=create_mean_param(57)" does not work 
-# --> replace: "<parameter id="RealParameter.57" estimate="false" name="mean">0</parameter>" 
-# --> with: "<parameter id="RealParameter.57" estimate="false" name="mean">57</parameter>"
-
-# replace all "clock_three_concat" to "clock_three_strict" in doc
-
-# !! ADD MMC + STARTING TREE MANUALLY (see above)
-
-### FOR MODEL SELECTION:
-# replace : <run id="mcmc" spec="MCMC" chainLength="1000000">
-# with : <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
-# 
-
-
-
-####### NINE POSSIBLE CLOCK-LIKE GENES #######
-
-clock_fsta = file.path(wd, "1_alignment","concat", "clock_nine_concat.fasta")
-
-## Relaxed clock ----
-clock_relaxed_xml_out = file.path(wd, "4_babette", "clock_nine_relaxed_mods.xml")
-
-#BEAUTi
-create_beast2_input_file(
-  input_filename = clock_fsta,
-  output_filename = clock_relaxed_xml_out,
-  mcmc=create_mcmc(chain_length = 10000000, store_every = 10000),
-  mrca_prior=create_mrca_prior(
-    is_monophyletic=T,
-    mrca_distr=create_normal_distr(
-      mean=create_mean_param(57),
-      sigma=create_sigma_param(value=6.12))),
-  site_model=create_hky_site_model(),
-  clock_model=create_rln_clock_model(), #RELAXED MODEL
-  tree_prior=create_yule_tree_prior()
-)
-
-# sometimes "mean=create_mean_param(57)" does not work 
-# --> replace: "<parameter id="RealParameter.57" estimate="false" name="mean">0</parameter>" 
-# --> with: "<parameter id="RealParameter.57" estimate="false" name="mean">57</parameter>"
-
-
-# replace all "clock_nine_concat" to "clock_nine_relaxed" in doc
-
-# ADD MMC + STARTING TREE MANUALLY
-
-### FOR MODEL SELECTION:
-# replace : <run id="mcmc" spec="MCMC" chainLength="1000000">
-# with : <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
-
-## Strict clock ----
-clock_strict_xml_out = file.path(wd, "4_babette", "clock_nine_strict_mods.xml")
-
-create_beast2_input_file(
-  input_filename = clock_fsta,
-  output_filename = clock_strict_xml_out,
-  mcmc=create_mcmc(chain_length = 10000000, store_every = 10000),
-  mrca_prior=create_mrca_prior(
-    is_monophyletic=T,
-    mrca_distr=create_normal_distr(
-      mean=create_mean_param(57),
-      sigma=create_sigma_param(value=6.12))),
-  site_model=create_hky_site_model(),
-  clock_model=create_strict_clock_model(), #STRICT MODEL
-  tree_prior=create_yule_tree_prior()
-)
-
-# sometimes "mean=create_mean_param(57)" does not work 
-# --> replace: "<parameter id="RealParameter.57" estimate="false" name="mean">0</parameter>" 
-# --> with: "<parameter id="RealParameter.57" estimate="false" name="mean">57</parameter>"
-
-
-# replace all "clock_nine_concat" to "clock_nine_strict" in doc
-
-# !! ADD MMC + STARTING TREE MANUALLY (see above)
-
-### FOR MODEL SELECTION:
-# replace : <run id="mcmc" spec="MCMC" chainLength="1000000">
-# with : <run id="mcmc" spec="beast.gss.NS" chainLength="20000" particleCount="1" subChainLength="5000">
 # 
 
 

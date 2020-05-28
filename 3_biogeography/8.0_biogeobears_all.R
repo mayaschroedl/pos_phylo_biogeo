@@ -26,20 +26,21 @@ ipak(pkg_list)
 
 # Working directory -------------------------------------------------------
 gwd = getwd() #general wd
-wd = file.path(gwd,"3_biogeography","biogeobears") #current wd
+wd = file.path(gwd,"3_biogeography","biogeobears","last") #current wd
 
 extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))#extra directory
 
 # General setup -----------------------------------------------------------
+
+#change tip labels
+source(file.path(gwd,"scripts","general","change_tiplabels.R"))
+change_tip_labs(file.path(wd,"no_gdis_concat_not_ready_nw.tree")
+                , file.path(wd,"no_gdis_concat_not_ready_nw_lab.tree"),
+                file.path(gwd, "2_phylo_dating","tags_indiv_dating.txt")) #works only in unix (I think)
+
+
 #### Tree file
-trfn = file.path(wd, "S886_aligned_gb_head_sp_added_R_calib_lab.tre")
-outgroup = "Dypsis_mananjarensis"
-
-tr = read.tree(trfn) #open tree
-tr_no_outgrp = drop.tip(tr, outgroup) #remove outgroup
-write.tree(tr_no_outgrp, file.path(wd, "S886_aligned_gb_head_sp_added_R_calib_lab_no_outgrp.tre")) #write new tree without outgroup
-
-trfn = file.path(wd, "S886_aligned_gb_head_sp_added_R_calib_lab_no_outgrp.tre") #open new tree without outgroup
+trfn = file.path(wd, "no_gdis_concat_not_ready_nw_lab.tree") #open new tree without outgroup
 tr = read.tree(trfn) #read new tree
 plot(tr) #plot new tree
 
@@ -59,7 +60,7 @@ max_range_size = 2 #we chose two areas
 ##### NODE CONSTRAINT ####
 # from Baker et al (2013a): doi:10.1111/j.1365-2699.2012.02795.x; we constrain the basal node to "S" South-East Asia (Baker et al: region F)
 
-node=c(28)
+node=c(21)
 #ranges_list: "_"  "A"  "S"  "M"  "AS" "AM" "SM"
 likes=c(0,0,1,0,0,0,0)
 
@@ -886,9 +887,9 @@ restable_AICc_rellike
 
 # Plot best model ---------------------------------------------------------
 
-analysis_titletxt =paste0("BioGeoBEARS DIVALIKE M0") #choose here the model that had the lowest AICc
+analysis_titletxt =paste0("BioGeoBEARS DEC M0") #choose here the model that had the lowest AICc
 # SETUP ----
-results_object = resDIVALIKE
+results_object = resDEC
 scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
 
 ### Colours ----
@@ -917,7 +918,7 @@ colors_list_for_states=c("white","khaki1","lightskyblue","firebrick3","sienna1",
 dev.off()
 plot_dir = file.path(gwd, "plots","biogeobears")
 if (!dir.exists(plot_dir)){dir.create(plot_dir)}
-pdf(file.path(plot_dir,"BioGeoBEARS_DIVALIKE_M0.pdf"))#save plots #rename accordingly to model chosen
+pdf(file.path(plot_dir,"BioGeoBEARS_DEC_M0_new.pdf"))#save plots #rename accordingly to model chosen
 
 # States
 plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#, colors_list_for_states=colors_list_for_states)

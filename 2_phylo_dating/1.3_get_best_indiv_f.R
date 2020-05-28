@@ -1,6 +1,6 @@
 ###########################################################################
 # Project: Orania Phylogeny MT
-# Script: beast_babette.R
+# Script: get_best_indiv.R
 # --- Action: for the species where we have two sequences, we will only chose the sequence with the alignments with least gaps (for monophyletic sequences) for dating and two sequences for non-monophyletic sequences
 # --- Input: 
 # --- Output: 
@@ -34,7 +34,7 @@ all_alignments_concat = read.fasta(file.path(wd, "1_alignment", "concat", "all_g
 
 get_gap_perc = function(indiv_num){ #get per individuum the percentage of gaps in alignment
   indiv_name = attr(all_alignments_concat[indiv_num],"name")
-  empty = length(which(all_alignments_concat[indiv_num][[1]]=="-"))+length(which(all_alignments_concat[indiv_num][[1]]=="n"))
+  empty = length(which(all_alignments_concat[indiv_num][[1]]=="-"))+length(which(all_alignments_concat[indiv_num][[1]]=="n")) #number of gaps in alignment
   
   perc = empty/length(all_alignments_concat[indiv_num][[1]])
   
