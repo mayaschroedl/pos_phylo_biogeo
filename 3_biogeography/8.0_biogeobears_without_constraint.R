@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 ###########################################################################
 # Project: Orania Phylogeny MT
-# Script: biogeobears.R
-# --- Action: 
+# Script: biogeobears_without_constraint.R
+# --- Action: no node constraint
 # --- Input: 
 # --- Output: 
 # Author: Maya Schroedl. Script inspired by BioGeoBears example script by
@@ -50,14 +50,6 @@ max(rowSums(dfnums_to_numeric(tipranges@df)))
 # set the maximum number of areas any species may occupy; this cannot be larger than the number of areas you set up, but it can be smaller.
 max_range_size = 2 #we chose two areas
 
-##### NODE CONSTRAINT ####
-# from Baker et al (2013a): doi:10.1111/j.1365-2699.2012.02795.x; we constrain the basal node to "S" South-East Asia (Baker et al: region F)
-
-node=c(21)
-#ranges_list: "_"  "A"  "S"  "M"  "AS" "AM" "SM"
-likes=c(0,0,1,0,0,0,0)
-
-
 # Different models --------------------------------------------------------
 
 #---- Null model (M0) ----#
@@ -67,9 +59,6 @@ likes=c(0,0,1,0,0,0,0)
 # Intitialize a default model (DEC model)
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
 
 # Give BioGeoBEARS the location of the phylogeny Newick file
 BioGeoBEARS_run_object$trfn = trfn
@@ -142,10 +131,6 @@ if (runslow)
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
-
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -215,10 +200,6 @@ if (runslow)
 ## BAYAREALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
-
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
 
 
 BioGeoBEARS_run_object$trfn = trfn
@@ -315,10 +296,6 @@ if (runslow)
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
 
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
-
 # Give BioGeoBEARS the location of the phylogeny Newick file
 BioGeoBEARS_run_object$trfn = trfn
 
@@ -400,10 +377,6 @@ if (runslow)
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
-
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
 BioGeoBEARS_run_object$max_range_size = max_range_size
@@ -484,9 +457,6 @@ if (runslow)
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
 
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
@@ -582,9 +552,6 @@ if (runslow)
 # Intitialize a default model (DEC model)
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
 
 # Give BioGeoBEARS the location of the phylogeny Newick file
 BioGeoBEARS_run_object$trfn = trfn
@@ -666,9 +633,6 @@ if (runslow)
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
 
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
 
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
@@ -749,10 +713,6 @@ if (runslow)
 ## BAYAREALIKE  ANALYSIS ----
 
 BioGeoBEARS_run_object = define_BioGeoBEARS_run()
-
-# Node constrain
-BioGeoBEARS_run_object$fixnode=node
-BioGeoBEARS_run_object$fixlikes=likes
 
 BioGeoBEARS_run_object$trfn = trfn
 BioGeoBEARS_run_object$geogfn = geogfn
@@ -879,7 +839,7 @@ restable_AICc_rellike
 
 
 # Plot best model ---------------------------------------------------------
-analysis_titletxt =paste0("BioGeoBEARS_DIVALIKE_M0") #choose here the model that had the lowest AICc
+analysis_titletxt =paste0("BioGeoBEARS_DIVALIKE_M0_without_constr") #choose here the model that had the lowest AICc
 # SETUP ----
 results_object = resDIVALIKE
 scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))

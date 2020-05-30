@@ -56,6 +56,14 @@ p
 
 dev.off()
 
+
+### DATED TREE
+
+#manually change tip labels in nexus file
+dated = read.beast(file.path(gwd,"2_phylo_dating","4_babette","no_gdis_concat_min_annot_lab.tree"))
+
+ggtree(dated)+geom_tiplab(offset = .1, hjust = .001)+  geom_range("length_0.95_HPD", color='red', size=2, alpha=.5) + theme_tree2()
+
 # Gene trees --------------------------------------------------------------
 
 genelist = read.table(file.path(wd, "genelist_7575.txt"))[,1]

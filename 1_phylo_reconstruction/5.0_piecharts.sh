@@ -78,6 +78,9 @@ gene_num() { wc -l < $WD/genelist_7575.txt ;}
 gene_n=$(gene_num)
 
 #execute Matt Johnson's script
-python $GWD/scripts/1_phylo_reconstruction/5.1_phypartstopiecharts.py $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab_rooted $WD/5_phypartstopiecharts/$dir_value $gene_n --svg_name $WD/5_phypartstopiecharts/$dir_value/phypartspiecharts_lab.svg 
+python $GWD/scripts/1_phylo_reconstruction/5.1_phypartstopiecharts.py $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab_rooted $WD/5_phypartstopiecharts/$dir_value $gene_n --svg_name $WD/5_phypartstopiecharts/$dir_value/phypartspiecharts_lab.svg
+
+#get numbering of nodes
+python $GWD/scripts/1_phylo_reconstruction/5.1_phypartstopiecharts.py $WD/4_coalescent_trees/"$dir_value"coalescent_lpp.tree_lab_rooted $WD/5_phypartstopiecharts/$dir_value $gene_n --svg_name $WD/5_phypartstopiecharts/$dir_value/phypartspiecharts_lab.svg --show_nodes
 
 cd $GWD
