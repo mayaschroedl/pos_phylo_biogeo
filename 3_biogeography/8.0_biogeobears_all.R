@@ -7,7 +7,7 @@
 # --- Output: 
 # Author: Maya Schroedl. Script inspired by BioGeoBears example script by
 # ------- Nicholas J. Matzke
-# Date: 11/2019
+
 ###########################################################################
 
 rm(list=ls())

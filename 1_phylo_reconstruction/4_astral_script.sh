@@ -5,8 +5,8 @@
 # --- Action: This script builts a coalescent tree using Astral.
 # --- Input: genetrees from raxml; file with species names
 # --- Output: coalescent tree
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 

@@ -7,7 +7,7 @@
 # --- Input: assembled contigs from script "hybpiper_script.sh"
 # --- Output: aligned contigs
 # Author: Maya Schroedl
-# Date: 11/2019
+
 ###########################################################################
 
 #remove files not listed in list

@@ -9,8 +9,8 @@
 # ----------- of the gene.
 # --- Input:  contigs and coverage maps for each gene
 # --- Output: trimmed contigs
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 """
 

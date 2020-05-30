@@ -7,8 +7,8 @@
 # ----------- position over the supercontig. Maps reads to supercontigs.
 # --- Input: supercontigs from script "hybpiper_script.sh"
 # --- Output: coverage map for each supercontig (per gene & tagecies)
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 rm(list=ls())

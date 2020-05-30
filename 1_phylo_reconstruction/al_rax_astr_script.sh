@@ -6,8 +6,8 @@
 # ----------- astral script.
 # --- Input: assembled contigs from script "hybpiper_script.sh"
 # --- Output: coalescent tree
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 #set working directory to current directory

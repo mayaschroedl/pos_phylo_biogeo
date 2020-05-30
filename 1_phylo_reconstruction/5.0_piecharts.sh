@@ -6,8 +6,8 @@
 # ----------- piecharts.
 # --- Input: gene trees; species tree
 # --- Output: species tree with piecharts
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 ###################

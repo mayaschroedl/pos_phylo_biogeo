@@ -6,8 +6,8 @@
 # ----------- We used the default parameters of Mafft and Gblocks.
 # --- Input: assembled contigs from script "hybpiper_script.sh"
 # --- Output: aligned contigs
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 ###################

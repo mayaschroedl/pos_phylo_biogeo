@@ -6,7 +6,7 @@
 # --- Input: selected genes
 # --- Output: concatenated alignments
 # Author: Maya Schroedl
-# Date: 11/2019
+
 ###########################################################################
 #install newest version of https://code.google.com/archive/p/hashrf/downloads
 

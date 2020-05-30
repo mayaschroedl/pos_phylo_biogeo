@@ -10,8 +10,8 @@
 # --- Input:  contigs and coverage maps for each gene, for different
 # ----------- species families ($ID)
 # --- Output: trimmed contigs for each speciesl family ($ID)
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 

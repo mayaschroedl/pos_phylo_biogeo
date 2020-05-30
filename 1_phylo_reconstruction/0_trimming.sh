@@ -5,8 +5,8 @@
 # --- Action: This script trimms the reads
 # --- Input: untrimmed reads
 # --- Output: trimmed reads and fastqc files
-# Author: Maya Schroedl
-# Date: 03/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
   
 #####################

@@ -5,7 +5,7 @@
 # --- Action: Collapses clades that present low branchlengths
 # --- Input: directory to tree (newick format), output file directory
 # --- Output: tree with collapsed clades (brnlen < 1 e-5)
-# Author: Maya Schroedl
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
 # Date: 04/2020
 ###########################################################################
 

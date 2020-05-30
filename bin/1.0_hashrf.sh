@@ -7,7 +7,7 @@
 # --- Input: gene trees; species tree
 # --- Output: matrix of RF values
 # Author: Maya Schroedl
-# Date: 11/2019
+
 ###########################################################################
 #install newest version of https://code.google.com/archive/p/hashrf/downloads
 

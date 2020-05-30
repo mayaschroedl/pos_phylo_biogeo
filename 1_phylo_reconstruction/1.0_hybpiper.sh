@@ -5,8 +5,8 @@
 # --- Action: This script maps reads to the bait target file using HybPiper
 # --- Input: trimmed reads & target file
 # --- Output: assembled supercontigs, exons, and introns
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 

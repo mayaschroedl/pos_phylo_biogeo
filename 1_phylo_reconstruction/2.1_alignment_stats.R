@@ -4,7 +4,7 @@
 # --- Action: get statistics for cleaned alignments
 # --- Input: 
 # --- Output: 
-# Author: Maya Schroedl
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
 ###########################################################################
 
 

@@ -5,8 +5,8 @@
 # --- Action: This script creates gene trees with RaxML
 # --- Input: aligned contigs
 # --- Output: gene trees
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 ###################

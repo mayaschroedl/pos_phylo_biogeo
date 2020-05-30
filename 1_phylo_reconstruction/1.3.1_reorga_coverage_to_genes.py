@@ -7,8 +7,8 @@
 # --- Action: This script reorganizes the coverage files. From TAGs to genes.
 # --- Input: coverage maps per TAG (one file per TAG)
 # --- Output: coverage maps per gene (one file per gene)
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 """
 

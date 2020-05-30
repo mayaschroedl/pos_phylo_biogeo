@@ -5,8 +5,8 @@
 # --- Action: How to filter loci with 75% of their length recovered in 75% of the TAGs
 # --- Input: 
 # --- Output: 
-# Author: Maya Schroedl
-# Date: 11/2019
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+
 ###########################################################################
 
 rm(list=ls())
