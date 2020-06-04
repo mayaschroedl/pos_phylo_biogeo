@@ -26,14 +26,25 @@ ipak(pkg_list)
 
 # Working directory -------------------------------------------------------
 gwd = getwd() #general wd
-wd = file.path(gwd,"3_biogeography","biogeobears") #current wd
+wd = file.path(gwd,"3_biogeography","biogeobears_without_constraint") #current wd
 
 extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))#extra directory
 
 # General setup -----------------------------------------------------------
 
 #### Tree file
-trfn = file.path(gwd, "2_phylo_dating", "4_babette_beast", "no_gdis_concat_min_annot_lab.nw") #open new tree without outgroup
+trfn_outgrp = file.path(gwd, "2_phylo_dating", "4_babette_beast", "no_gdis_concat_annot_lab.nw") #open new tree without outgroup
+
+# Drop outgroup
+outgroup = "Dypsis_mananjarensis"
+
+tr_outgrp = read.tree(trfn_outgrp) #open tree
+tr_no_outgrp = drop.tip(tr_outgrp, outgroup) #remove outgroup
+write.tree(tr_no_outgrp, file.path(wd, "no_gdis_concat_annot_lab_outgrpdrop.nw")) #write new tree without outgroup
+
+
+trfn = file.path(wd, "no_gdis_concat_annot_lab_outgrpdrop.nw") #open new tree without outgroup
+
 tr = read.tree(trfn) #read new tree
 plot(tr) #plot new tree
 
@@ -837,6 +848,7 @@ restable_AICc_rellike = AkaikeWeights_on_summary_table(restable=restable2, colna
 restable_AICc_rellike = put_jcol_after_ecol(restable_AICc_rellike)
 restable_AICc_rellike
 
+write.table(restable_AICc_rellike, file.path(wd,"model_comp.txt"), quote = F)
 
 # Plot best model ---------------------------------------------------------
 analysis_titletxt =paste0("BioGeoBEARS_DIVALIKE_M0_without_constr") #choose here the model that had the lowest AICc
@@ -847,7 +859,7 @@ scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
 dev.off()
 plot_dir = file.path(gwd, "plots","biogeobears")
 if (!dir.exists(plot_dir)){dir.create(plot_dir)}
-svg(file.path(plot_dir,paste0(analysis_titletxt,".svg")))#save plots #rename accordingly to model chosen
+pdf(file.path(plot_dir,paste0(analysis_titletxt,".pdf")))#save plots #rename accordingly to model chosen
 
 # States
 plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#, colors_list_for_states=colors_list_for_states)

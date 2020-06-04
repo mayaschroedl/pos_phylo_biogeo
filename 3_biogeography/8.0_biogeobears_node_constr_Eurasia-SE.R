@@ -26,7 +26,7 @@ ipak(pkg_list)
 
 # Working directory -------------------------------------------------------
 gwd = getwd() #general wd
-wd = file.path(gwd,"3_biogeography","biogeobears") #current wd
+wd = file.path(gwd,"3_biogeography","biogeobears_constr_eurasia") #current wd
 
 extdata_dir = np(system.file("extdata", package="BioGeoBEARS"))#extra directory
 
@@ -51,11 +51,30 @@ max(rowSums(dfnums_to_numeric(tipranges@df)))
 max_range_size = 2 #we chose two areas
 
 ##### NODE CONSTRAINT ####
-# from Baker et al (2013a): doi:10.1111/j.1365-2699.2012.02795.x; we constrain the basal node to "S" South-East Asia (Baker et al: region F)
+# 
+# #get list of ranges:
+# 
+areas=c("A","S","M","E")
+states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=TRUE)
 
+# Make the list of ranges
+ranges_list = NULL
+for (i in 1:length(states_list_0based))
+{
+  if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )
+  {
+    tmprange = "_"
+  } else {
+    tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")
+  }
+  ranges_list = c(ranges_list, tmprange)
+}
+
+ranges_list
+# from Baker et al (2013a): doi:10.1111/j.1365-2699.2012.02795.x; we constrain the basal node to "SE" South-East Asia and continental Eurasia (Baker et al: region F)
 node=c(21)
-#ranges_list: "_"  "A"  "S"  "M"  "AS" "AM" "SM"
-likes=c(0,0,1,0,0,0,0)
+#ranges_list: "_"  "A"  "S"  "M"  "E"  "AS" "AM" "AE" "SM" "SE" "ME"
+likes=c(0,0,0,0,0,0,0,0,0,1,0)
 
 
 # Different models --------------------------------------------------------
@@ -888,40 +907,13 @@ scriptdir = np(system.file("extdata/a_scripts", package="BioGeoBEARS"))
 dev.off()
 plot_dir = file.path(gwd, "plots","biogeobears")
 if (!dir.exists(plot_dir)){dir.create(plot_dir)}
-svg(file.path(plot_dir,paste0(analysis_titletxt,".svg")))#save plots #rename accordingly to model chosen
+pdf(file.path(plot_dir,paste0(analysis_titletxt,".pdf")))#save plots #rename accordingly to model chosen
 
-# States
-plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="text", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#, colors_list_for_states=colors_list_for_states)
-
-# Pie chart
+# Pie charts
 plot_BioGeoBEARS_results(results_object, analysis_titletxt, plotwhat="pie", label.offset=0.45, tipcex=0.7, statecex=0.7, splitcex=0.6, titlecex=0.8, plotsplits=TRUE, cornercoords_loc=scriptdir, include_null_range=TRUE, tr=tr, tipranges=tipranges)#, colors_list_for_states=colors_list_for_states)
 
 dev.off()
 
 
 
-
-
-### Colours ----
-# areas=c("A","S","M")
-# states_list_0based = rcpp_areas_list_to_states_list(areas=areas, maxareas=max_range_size, include_null_range=TRUE)
-# 
-# # Make the list of ranges
-# ranges_list = NULL
-# for (i in 1:length(states_list_0based))
-# {    
-#   if ( (length(states_list_0based[[i]]) == 1) && (is.na(states_list_0based[[i]])) )
-#   {
-#     tmprange = "_"
-#   } else {
-#     tmprange = paste(areas[states_list_0based[[i]]+1], collapse="")
-#   }
-#   ranges_list = c(ranges_list, tmprange)
-# }
-# 
-# 
-# ranges_list
-# 
-# #make color list for ranges (=states)
-# colors_list_for_states=c("white","khaki1","lightskyblue","firebrick3","sienna1","darkolivegreen1","mediumpurple3")
 
