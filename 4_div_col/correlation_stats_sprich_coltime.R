@@ -13,6 +13,7 @@ rm(list=ls())
 # Libraries ---------------------------------------------------------------
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2');theme_set(theme_classic())
 if (!require("RColorBrewer")) install.packages("RColorBrewer"); library("RColorBrewer")
+if (!require("gridExtra")) install.packages("gridExtra"); library("gridExtra")
 
 
 # Seed --------------------------------------------------------------------
@@ -39,30 +40,27 @@ all$col = custom.col[1:length(all$lineage)]
 selected$col = custom.col[1:length(selected$lineage)]
 
 ### All; both Borassus in one group:
-A_B1 = all[-which(all$lineage == "Borassus_both"),]
+A_B1 = all[-which(all$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
 
 ### All; each Borassus in one group
-A_B2 = all[-which(all$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
+A_B2 = all[-which(all$lineage == "Borassus_both"),]
 
 ### Selected; both Borassus in one group:
-S_B1 = all[-which(selected$lineage == "Borassus_both"),]
-
+S_B1 = all[-which(selected$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
 
 ### Selected; each Borassus in one group
-S_B2 = all[-which(selected$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
+S_B2 = all[-which(selected$lineage == "Borassus_both"),]
 
 # Plot --------------------------------------------------------------------
 div_time_plot=function(dataset){
-  title=deparse(substitute(dataset)) #get input variable name for plot title
   g = ggplot(dataset, aes(earliest, mg_species_num_log)) +
     geom_errorbarh(aes(xmin=earliest,xmax=latest, colour= col,alpha=0.6),size=2)+
     scale_colour_identity()    + 
     theme_classic() +
     theme(text = element_text(size=20))+
     theme(legend.position = "none") +
-    ggtitle(title) +
-    xlab("\nArrival time [mya]") + 
-    ylab("ln (Malagasy species richness)\n")+
+    xlab("\nArrival time [Mya]") + 
+    ylab("ln (Madagascan species richness)\n")+
     theme(axis.text.x = element_text(size=20),
           axis.text.y = element_text(size=20))+
     scale_x_continuous(breaks=seq(0, 70, 10))+
@@ -136,20 +134,21 @@ S_B2_cor = cor_sampling(S_B2)
 S_B2_cor[c(1,2)] # percentage of significant correlations; percentage of significant positive correlations
 
 
-###### EXPORT PLOT dataset S_B1
 
-plot.dir = file.path(getwd(), "plots", "div_col")
-if(!dir.exists(plot.dir)){dir.create(plot.dir)}
+###### EXPORT PLOTS
+export_plots = function(used_dataset){
+  
+  title=deparse(substitute(used_dataset)) #get input variable name for plot title
 
-pdf(file.path(plot.dir,"S_B1.pdf"))
-div_time_plot(S_B1)
-dev.off()
+jpeg(file.path(plot.dir,paste0(title,".jpeg")), width = 480*2)
 
-##### MAKE HISTOGRAM of slopes dataset S_B1
-##### 
-pdf(file.path(plot.dir,"S_B1_hist.pdf"))
-ggplot(S_B1_cor[3][[1]])+
-  geom_histogram(aes(S_B1_cor[3][[1]]$rho))+
+# make PLOT dataset
+plot_cor = div_time_plot(used_dataset)+ggtitle(title)
+
+#MAKE HISTOGRAM of slopes dataset
+data_set_cor=cor_sampling(used_dataset) # get correlation values for dataset (need to calculate again, sorry. but should be quick)
+plot_rho = ggplot(data_set_cor[3][[1]])+
+  geom_histogram(aes(data_set_cor[3][[1]]$rho))+
   xlim(c(-1,1))+
   xlab("\nPearsons' rho")+
   ylab("Frequency\n")+
@@ -157,4 +156,11 @@ ggplot(S_B1_cor[3][[1]])+
   theme(axis.text.x = element_text(size=20),
         axis.text.y = element_text(size=20))
   
-dev.off()
+
+grid.arrange(plot_cor, plot_rho, ncol=2)
+dev.off()}
+
+export_plots(S_B1)
+export_plots(S_B2)
+export_plots(A_B1)
+export_plots(A_B2)
