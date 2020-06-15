@@ -1,32 +1,113 @@
-install.packages("ape")
-install.packages("phangorn")
-install.packages("phytools")
-install.packages("geiger")
 
-library(ape)
-library(phangorn)
-library(phytools)
-library(geiger)
+#beautiful phylo viz
 
-### tree orsclpoddyp
-text.string="(Sclerosperma_mannii:0.18859116980755017,(Sclerosperma_walkeri..mybe:0.22148814541376946,((Dypsis_mananjarensis,(Podoccocus_barteri:0.5519097071358653,Podoccocus_acaulis)1:2.942502398287406)0.48:0.03110072401971957,(((Orania_sylvicola:0.0,Orania_sp.)1:0.6498953102528635,(Orania_timikae,(Orania_deflexa,(Orania_dafonsoroensis,(Orania_palindan:0.0,(Orania_macropetala,(Orania_lauterbachiana:0.0,(Orania_grandiflora,(Orania_tabubilensis,Orania_archboldiana)1:0.25770583617170323)0.98:0.1562448642235)0.49:0.07013277183398067)0.98:0.15304459150265387)1:0.2702654097167512)0.71:0.07282018020462648)1:0.3529123705734845)1:1.1644871784667303)1:1.8859949162056466,((Orania_ravaka:0.2332974836543001,Orania_trispatha)0.81:0.10695886217476851,Orania_longisquama)1:1.7773670585586028)1:2.6130476026770078)1:2.408405801941171)0.99:0.18859116980755017);
-"
-as.phylo(text.string)
-vert.tree<-read.tree(text=text.string)
-plot(vert.tree,no.margin=TRUE,edge.width=2)
+library("ggplot2")
+library("ggtree")
 
+library("ape")
 
-##really nice:
+# WD  --------------------------------------------------------------
+gwd=getwd() # global working directory
+wd=file.path(getwd(),"1_phylo_reconstruction") #local working directory
+t=2 # threshold
 
-pdffn = "tree.pdf"
-pdf(file=pdffn, width=9, height=12)
+# Directories --------------------------------------------------------
+dir_plots_phylo=file.path(gwd,"plots","phylogenies")
+if (!dir.exists(dir_plots_phylo)){dir.create(dir_plots_phylo, recursive=T)}
 
-tr = read.tree(trfn)
-tr
-plot(tr)
-title("Example Psychotria phylogeny from Ree & Smith (2008)")
-axisPhylo() # plots timescale
+# Astral trees -------------------------------------------------------------
+#dev.off()
+#pdf(file.path(gwd,"plots","phylogenies","all_astral_trees.pdf"))
+### ASTRAL IDMERG
+dev.off()
+svg(file.path(gwd,"plots","phylogenies","astral_sp_final.svg"))
+#lpp
+astral_idmerg_lpp = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp_idmerg.tree_rooted" ))
+
+p=ggtree(astral_idmerg_lpp)+geom_tiplab(offset = .9, hjust = .5)#+geom_text2(aes(subset = !isTip, label=label))
+
+p = rotate(p,20)
+p = rotate(p,22)
+p = rotate(p,31)
+
+p
+
+#plot(astral_idmerg_lpp, main = "Astral tree of species LP", use.edge.length = T)
+#nodelabels(astral_idmerg_lpp$node.label, frame= "none")
 
 dev.off()
-cmdstr = paste0("open ", pdffn)
-system(cmdstr)
+
+
+### ASTRAL INDIV
+dev.off()
+svg(file.path(gwd,"plots","phylogenies","astral_indiv_final.svg"))
+#lpp
+astral_idmerg_lpp = read.tree (file.path(gwd,"1_phylo_reconstruction", "4_coalescent_trees", t, "coalescent_lpp.tree_lab_rooted" ))
+
+p=ggtree(astral_idmerg_lpp)+geom_tiplab(offset = .9, hjust = .5)#+geom_text2(aes(subset = !isTip, label=label))
+
+p = rotate(p,29)
+p = rotate(p,30)
+p = rotate(p,50)
+p = rotate(p,37)
+p = rotate(p,48)
+
+p
+
+dev.off()
+
+
+### DATED TREE
+
+#manually change tip labels in nexus file
+dated = read.beast(file.path(gwd,"2_phylo_dating","4_babette","no_gdis_concat_min_annot_lab.tree"))
+
+ggtree(dated)+geom_tiplab(offset = .1, hjust = .001)+  geom_range("length_0.95_HPD", color='red', size=2, alpha=.5) + theme_tree2()
+
+# Gene trees --------------------------------------------------------------
+
+genelist = read.table(file.path(wd, "genelist_7575.txt"))[,1]
+
+pdf(file.path(dir_plots_phylo,"genetrees_rooted.pdf"))
+for (gene in genelist){
+  
+  genetree_rooted_file=file.path(wd, "3_gene_trees", t, "4_collapsed", paste0(gene, ".raxml.support.coll_lab_rooted"))
+  tree_rooted=read.tree(genetree_rooted_file)
+  
+  plot.phylo(tree_rooted, main= gene)
+  nodelabels(text=tree_rooted$node.label, frame="none")
+  
+}
+
+dev.off()
+
+
+# Genes selected for dating -----------------------------------------------
+
+genelist = read.table(file.path(gwd, "2_phylo_dating","1_gene_shop","selected_genes", "no_gdis.txt"))[,1]
+
+pdf(file.path(dir_plots_phylo,"no_gdis_rooted.pdf"))
+for (gene in genelist){
+  
+  genetree_rooted_file=file.path(wd, "3_gene_trees", t, "4_collapsed", paste0(gene, ".raxml.support.coll_lab_rooted"))
+  tree_rooted=read.tree(genetree_rooted_file)
+  
+  plot.phylo(tree_rooted, main= gene)
+  nodelabels(text=tree_rooted$node.label, frame="none")
+  
+}
+
+dev.off()
+
+
+# ggtree(tree)+
+#   geom_nodelab()+
+#   geom_tiplab() +
+#   #geom_text2(aes(subset=!isTip, label=node), hjust=-.3) +
+#   xlim(0, 25)#+
+# 
+#   #geom_cladelabel(node=44, label="Madagascar", align=T, color='red', offset = 5) +
+#   #geom_cladelabel(node=48, label="Africa", align=T, color='blue', offset = 5) +
+#   #geom_cladelabel(node=31, label="SE Asia", align=T, color='green', offset = 5)
+
+

@@ -2,10 +2,10 @@
 ###########################################################################
 # Project: Orania Phylogeny MT
 # Script: gene_select_75_75.R
-# --- Action: How to filter loci with 75% of their length recovered in 75% of the TAGs
-# --- Input: 
-# --- Output: 
-# Author: Maya Schroedl (maya.schroedl@bios.au.dk)
+# --- Action: Filter genes with 75% of their length recovered in 75% of the TAGs
+# --- Input: HybPiper output sequence length file (seq_lengths.txt)
+# --- Output: List of genes that have more than 75% of their target length reconstructed in 75% of all individuals
+# Author: Maya Schroedl (maya.schroedl@bios.au.dk). adapted from a script by  Sebastian Escobar
 
 ###########################################################################
 
@@ -21,7 +21,7 @@ if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
 wd=file.path(getwd(),"1_phylo_reconstruction")
 
 seq.ref.len=read.table(file.path(wd,"1.0_hybpiper","seq_lengths.txt")
-                  ,header=T,sep="\t")
+                  ,header=T,sep="\t") # hybpiper output file (sequence lengths)
 
 #first line is the reference length (length of the gene in the target file)
 ref.len=seq.ref.len[1,]

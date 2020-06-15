@@ -2,9 +2,9 @@
 ###########################################################################
 # Project: Div_col_palm_Madag
 # Script: 
-# --- Action: 
-# --- Input: 
-# --- Output:
+# --- Action: Test how probable a signicant positive/negative correlation of species richness and arrival time is when sampling randomly on all possible arrival time intervals.
+# --- Input: Tables with arrival time intervals and ln(species richness) for each group; one for all sources and one for selected sources
+# --- Output: Plots of the intervals; probabilities of significant positive/negative correlations for each dataset, & histogram of correlation slopes.
 # Author: Maya Schroedl
 ###########################################################################
 
@@ -23,10 +23,29 @@ set.seed(42)
 # WD + Data ----------------------------------------------------------------------
 wd = file.path(getwd(), "4_div_col")
 
+# Table with the dates of all sources. Approach "A"
 all = read.table(file.path(wd, "data", "all.txt"),h=T,sep="\t") # all sources
+
+# Table with the dates of selected sources. Approach "S"
 selected = read.table(file.path(wd, "data", "selected.txt"),h=T,sep="\t") # selected sources
 
-# Colours
+###Construction of the four datasets, depending on the scenario chosen for Borassus (B1: one colonization event --> one Borassus group) (B2: two colonization events --> two Borassus group) 
+
+### All; both Borassus in one group:
+A_B1 = all[-which(all$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),] #remove the borassus groups which do not correspond to the dataset
+
+### All; each Borassus in one group
+A_B2 = all[-which(all$lineage == "Borassus_both"),]
+
+### Selected; both Borassus in one group:
+S_B1 = all[-which(selected$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
+
+### Selected; each Borassus in one group
+S_B2 = all[-which(selected$lineage == "Borassus_both"),]
+
+# Plot --------------------------------------------------------------------
+
+# Colours for the plots
 gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   hcl(h = hues, l = 65, c = 100)[1:n]
@@ -39,22 +58,10 @@ custom.col[7] = "gold"
 all$col = custom.col[1:length(all$lineage)]
 selected$col = custom.col[1:length(selected$lineage)]
 
-### All; both Borassus in one group:
-A_B1 = all[-which(all$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
-
-### All; each Borassus in one group
-A_B2 = all[-which(all$lineage == "Borassus_both"),]
-
-### Selected; both Borassus in one group:
-S_B1 = all[-which(selected$lineage %in% c("Borassus_madagascariensis","Borassus_aethiopium_Madagascar")),]
-
-### Selected; each Borassus in one group
-S_B2 = all[-which(selected$lineage == "Borassus_both"),]
-
-# Plot --------------------------------------------------------------------
+##### ln(species richness) as a function of arrival time with the possible arrival time intervals plotted
 div_time_plot=function(dataset){
-  g = ggplot(dataset, aes(earliest, mg_species_num_log)) +
-    geom_errorbarh(aes(xmin=earliest,xmax=latest, colour= col,alpha=0.6),size=2)+
+    g = ggplot(dataset, aes(earliest, mg_species_num_log)) +
+    geom_errorbarh(aes(xmin=earliest,xmax=latest, colour= col,alpha=0.6),size=2)+ #interval
     scale_colour_identity()    + 
     theme_classic() +
     theme(text = element_text(size=20))+
@@ -72,10 +79,8 @@ return(g)
 cor_sampling = function(dataset,rep_nb=100000){
   # We want to see how "probable" a correlation is according to these data
   # Therefore, we sample randomly an arrival time for each group on its arrival time interval (when group possibly arrived to Madagascar). For each series (one sample per group), we test the correlation between the log(Malagasy species richness) and the arrival time. This is repeated $sample_num times and then a proportion of significant correlations and significant positive (as expected) correlations is calculated over all repetitions.
-  rep_num = rep_nb
-  # Seed 
+  rep_num = rep_nb #number of repetitions
   
-
   samp_unif = function(group, rep_nb = rep_num){
     # Sample randomly for the selected group an arrival time on a uniform distribution over the interval; repeat this for $sample_num times
  
@@ -135,31 +140,30 @@ S_B2_cor[c(1,2)] # percentage of significant correlations; percentage of signifi
 
 
 
-###### EXPORT PLOTS
-export_plots = function(used_dataset){
-  
+###### EXPORT PLOTS for each dataset
+export_plots = function(used_dataset){#used_dataset: name of dataset (e.g. S_B1)
   title=deparse(substitute(used_dataset)) #get input variable name for plot title
-
-jpeg(file.path(plot.dir,paste0(title,".jpeg")), width = 480*2)
+  jpeg(file.path(plot.dir,paste0(title,".jpeg")), width = 480*2) #export to jpeg
 
 # make PLOT dataset
-plot_cor = div_time_plot(used_dataset)+ggtitle(title)
+  plot_cor = div_time_plot(used_dataset)+ggtitle(title)
 
 #MAKE HISTOGRAM of slopes dataset
-data_set_cor=cor_sampling(used_dataset) # get correlation values for dataset (need to calculate again, sorry. but should be quick)
-plot_rho = ggplot(data_set_cor[3][[1]])+
-  geom_histogram(aes(data_set_cor[3][[1]]$rho))+
-  xlim(c(-1,1))+
-  xlab("\nPearsons' rho")+
-  ylab("Frequency\n")+
-  theme(text = element_text(size=20))+
-  theme(axis.text.x = element_text(size=20),
+  data_set_cor=cor_sampling(used_dataset) # get correlation values for dataset (need to calculate again, sorry. but should be quick)
+  plot_rho = ggplot(data_set_cor[3][[1]])+
+    geom_histogram(aes(data_set_cor[3][[1]]$rho))+
+    xlim(c(-1,1))+
+    xlab("\nPearsons' rho")+
+    ylab("Frequency\n")+
+    theme(text = element_text(size=20))+
+    theme(axis.text.x = element_text(size=20),
         axis.text.y = element_text(size=20))
   
 
-grid.arrange(plot_cor, plot_rho, ncol=2)
+grid.arrange(plot_cor, plot_rho, ncol=2) #put two plot next to each other
 dev.off()}
 
+#for each dataset
 export_plots(S_B1)
 export_plots(S_B2)
 export_plots(A_B1)
