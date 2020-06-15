@@ -13,13 +13,13 @@ the frequencies of different standardized slopes for the correlations ln(species
 
 **Figure S2:** Representation of the natural logarithm of Madagascan species richness
 as a function of arrival time to Madagascar, and histogram representing
-the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. [thesis]((https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)), but for the dataset A-B1 (all sources & only one Madagascan colonization event for Borassus). For a detailed description see the figure caption.
+the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. [thesis](https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)), but for the dataset A-B1 (all sources & only one Madagascan colonization event for Borassus). For a detailed description see the figure caption.
 
 #### **`Fig_S3_A-B2.jpg`**
 
 **Figure S3:** Representation of the natural logarithm of Madagascan species richness
 as a function of arrival time to Madagascar, and histogram representing
-the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. [thesis]((https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)), but for the dataset A-B2 (all sources & two Madagascan colonization events for Borassus). For a detailed description see the figure caption.
+the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. [thesis](https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)), but for the dataset A-B2 (all sources & two Madagascan colonization events for Borassus). For a detailed description see the figure caption.
 
 
 ## PART C: Phylogenomics & Biogeography of the genus *Orania*
@@ -55,7 +55,7 @@ Number of genes with sequences, Number of genes with sequences > 25% of the
 target length, Number of genes with sequences > 50% of the target length, Number
 of genes with sequences > 75% of the target length, Number of genes with sequences
 $\lt$ 150% of the target length, Number of genes with paralog warnings, as described
-in the HybPiper Wiki (https://github.com/mossmatters/HybPiper/wiki).
+in the [HybPiper Wiki](https://github.com/mossmatters/HybPiper/wiki).
 
 #### **`Tab_S2_Biogeo_model_select_no_constr.pdf`**
 
@@ -90,8 +90,7 @@ score; AICc_wt: AICc weight.
 **Figure S1: HybPiper heatmap. Visualization of recovery efficiency, figure created
 by HybPiper.** Each row shows a sample, and each column is a gene. The
 amount of shading in each box corresponds to the length of the gene recovered for
-that sample, relative to the length of the target coding sequence (cf. HybPiper Wiki
-https://github.com/mossmatters/HybPiper/wiki).
+that sample, relative to the length of the target coding sequence (cf. [HybPiper Wiki]https://github.com/mossmatters/HybPiper/wiki).
 
 #### **`Fig_S2_PhyParts_as_pie_charts.pdf`**
 
