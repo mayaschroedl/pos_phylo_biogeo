@@ -1,4 +1,4 @@
-# Supplementary material of the Master's thesis "Colonization and diversification history of Madagascan palms with new phylogenomic evidence from the genus *Orania* (Arecaceae)" by Maya Schrödl
+# Supplementary material of the Master's thesis "[Colonization and diversification history of Madagascan palms with new phylogenomic evidence from the genus *Orania* (Arecaceae)](https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)" by Maya Schrodl
 
 
 ## PART B: Testing the 'Time-for-Speciation hypothesis' in Madagascan palms
@@ -7,19 +7,19 @@
 
 **Figure S1:** Representation of the natural logarithm of Madagascan species richness
 as a function of arrival time to Madagascar, and histogram representing
-the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. thesis), but for the dataset S-B2 (selected sources & two Madagascan colonization events for Borassus). For a detailed description see the figure caption.
+the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. [thesis](https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)), but for the dataset S-B2 (selected sources & two Madagascan colonization events for Borassus). For a detailed description see the figure caption.
 
 #### **`Fig_S2_A-B1.jpg`**
 
 **Figure S2:** Representation of the natural logarithm of Madagascan species richness
 as a function of arrival time to Madagascar, and histogram representing
-the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. thesis), but for the dataset A-B1 (all sources & only one Madagascan colonization event for Borassus). For a detailed description see the figure caption.
+the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. [thesis]((https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)), but for the dataset A-B1 (all sources & only one Madagascan colonization event for Borassus). For a detailed description see the figure caption.
 
 #### **`Fig_S3_A-B2.jpg`**
 
 **Figure S3:** Representation of the natural logarithm of Madagascan species richness
 as a function of arrival time to Madagascar, and histogram representing
-the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. thesis), but for the dataset A-B2 (all sources & two Madagascan colonization events for Borassus). For a detailed description see the figure caption.
+the frequencies of different standardized slopes for the correlations ln(species richness) ~ arrival time. Same as Figure 1 in main text (cf. [thesis]((https://github.com/pebgroup/pos_phylo_biogeo/blob/master/Master_Thesis_Maya_Schrodl.pdf)), but for the dataset A-B2 (all sources & two Madagascan colonization events for Borassus). For a detailed description see the figure caption.
 
 
 ## PART C: Phylogenomics & Biogeography of the genus *Orania*
