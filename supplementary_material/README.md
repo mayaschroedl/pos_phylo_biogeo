@@ -90,7 +90,7 @@ score; AICc_wt: AICc weight.
 **Figure S1: HybPiper heatmap. Visualization of recovery efficiency, figure created
 by HybPiper.** Each row shows a sample, and each column is a gene. The
 amount of shading in each box corresponds to the length of the gene recovered for
-that sample, relative to the length of the target coding sequence (cf. [HybPiper Wiki]https://github.com/mossmatters/HybPiper/wiki).
+that sample, relative to the length of the target coding sequence (cf. [HybPiper Wiki](https://github.com/mossmatters/HybPiper/wiki)).
 
 #### **`Fig_S2_PhyParts_as_pie_charts.pdf`**
 
