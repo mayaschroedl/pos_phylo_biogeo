@@ -3,7 +3,8 @@
 # Project: Orania Phylogeny MT
 # Script: alignment_script.sh
 # --- Action: This script aligns the contigs using Mafft and Gblocks.
-# ----------- We used the default parameters of Mafft and Gblocks.
+# ----------- We used the default parameters of Mafft (with --auto option) 
+# ----------- and Gblocks (with -b5="a" option)
 # --- Input: assembled contigs from script "hybpiper_script.sh"
 # --- Output: aligned contigs
 # Author: Maya Schroedl (maya.schroedl@bios.au.dk)
@@ -89,11 +90,6 @@ do cp "$file" ${file/.fasta}_mod.fasta;
 done
 
 #alignments were manually corrected using AliView v 1.26 because some sequences were misaligned.
-
-
-
-rm *.htm
-rm *combined.fasta
 
 
 cd $GWD

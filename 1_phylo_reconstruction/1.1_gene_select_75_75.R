@@ -17,7 +17,7 @@ if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
 
 ####
 
-# wd & arguments --------------------------------------------------------------
+# WD & arguments --------------------------------------------------------------
 wd=file.path(getwd(),"1_phylo_reconstruction")
 
 seq.ref.len=read.table(file.path(wd,"1.0_hybpiper","seq_lengths.txt")

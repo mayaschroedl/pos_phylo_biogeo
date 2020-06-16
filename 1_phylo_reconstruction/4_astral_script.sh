@@ -2,9 +2,9 @@
 ###########################################################################
 # Project: Orania Phylogeny MT
 # Script: alignment_script.sh
-# --- Action: This script builts a coalescent tree using Astral.
-# --- Input: genetrees from raxml; file with species names
-# --- Output: coalescent tree
+# --- Action: This script builds a coalescent tree using Astral.
+# --- Input: genetrees from raxml
+# --- Output: coalescent species tree and tree of individuals
 # Author: Maya Schroedl (maya.schroedl@bios.au.dk)
 
 ###########################################################################
@@ -117,7 +117,6 @@ Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_val
 Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_constr_palindan.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_constr_palindan.tree_lab $WD/input_reads_and_info/tags_indiv.txt
 
 Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_constr_lauterb.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_constr_lauterb.tree_lab $WD/input_reads_and_info/tags_indiv.txt
-
 
 Rscript $GWD/scripts/general/change_tiplabels.R $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_constr_palindan_and_lauterb.tree $WD/4_coalescent_trees/"$dir_value"coalescent_lpp_constr_palindan_and_lauterb.tree_lab $WD/input_reads_and_info/tags_indiv.txt
 

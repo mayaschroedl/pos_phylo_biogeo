@@ -2,8 +2,8 @@
 # Project: Orania Phylogeny MT
 # Script: alignment_stats.R
 # --- Action: get statistics for cleaned alignments
-# --- Input: 
-# --- Output: 
+# --- Input: alignments
+# --- Output: different statistics, e.g. mean alignment length, overall percentage of missing data
 # Author: Maya Schroedl (maya.schroedl@bios.au.dk)
 ###########################################################################
 

@@ -3,13 +3,13 @@
 
 ###########################################################################
 # Project: Orania Phylogeny MT
-# Script: trimm_contigs.sh
-# --- Action: This script replaces the bases that have a coverage under 
-# ----------- a certain threshold “t” with an “N” and then trimms the ends
-# ----------- of the gene.
+# Script: cov_trimm_contigs.sh
+# --- Action: This script detects which positions on a supercontig that 
+# ----------- have a read coverage  under a certain threshold and masks 
+# ----------- those positions, and trimms the read endings
 # --- Input:  contigs and coverage maps for each gene, for different
-# ----------- species families ($ID)
-# --- Output: trimmed contigs for each speciesl family ($ID)
+# ----------- TAGs
+# --- Output: trimmed contigs for each TAG
 # Author: Maya Schroedl (maya.schroedl@bios.au.dk)
 
 ###########################################################################
@@ -65,7 +65,7 @@ for file in *.fasta; do sed -i 's/-[^-]*//2g' $file; done #
 #----FILE PREPARATION----#
 ##########################
 #----PROBLEM----#
-#We generated coverage maps per TAG. But we want the trimmed conitgs organized in genes. 
+#We generated coverage maps per TAG. But we want the trimmed contigs organized in genes. 
 #----SOLUTION---#
 #--> we have to reorganize the coverage maps per gene
 

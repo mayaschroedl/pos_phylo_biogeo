@@ -13,7 +13,8 @@
 #----ARGUMENTS----#
 ###################
 
-#t:if you want trimmed contigs, based on coverage and threshold, enter t:threshold
+#t:if you want trimmed contigs, based on coverage and threshold, 
+#   enter t:threshold
 #o: outgroup (TAG)
 #l: labeled outgroup (individual name)
 while getopts ":t:o:l:" opt; do
@@ -48,7 +49,9 @@ done
 GWD=$PWD #global working directory, with subprojects and scripts
 WD="$GWD"/1_phylo_reconstruction #current working directory
 
-if ! [ -z "$t" ]; #if there is a threshold definded, then work in the threshold directory
+
+#if there is a threshold definded, then work in the threshold directory
+if ! [ -z "$t" ];
 then
         dir_value=$t/
 fi
@@ -76,22 +79,45 @@ cd $WD/3_gene_trees/$dir_value
 
 # #rax1_ML-ng + bootstrap
 while read gene;
- do raxml-ng --msa $WD/2_alignment/$dir_value"remove"/"$gene"_aligned_gb_mod.fasta --model GTR+G --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"1_ML/"$gene" --redo #built best maximum likelihood trees
- raxml-ng --bootstrap --msa $WD/2_alignment/$dir_value"remove"/"$gene"_aligned_gb_mod.fasta --model GTR+G --seed 2 --bs-trees 200 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene" --redo
- raxml-ng --support --tree $WD/3_gene_trees/"$dir_value"1_ML/"$gene".raxml.bestTree --bs-trees $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene".raxml.bootstraps --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"3_support/"$gene" --redo
+
+  #built best maximum likelihood trees
+ do raxml-ng --msa $WD/2_alignment/$dir_value"remove"/"$gene"_aligned_gb_mod.fasta 
+      --model GTR+G --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"1_ML/"$gene" 
+      --redo 
+      
+  #generate bootstraps
+ raxml-ng --bootstrap --msa $WD/2_alignment/$dir_value"remove"/"$gene"_aligned_gb_mod.fasta 
+      --model GTR+G --seed 2 --bs-trees 200 --threads 2 
+      --prefix $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene" --redo
+      
+  #from bootstrap trees -> generate one summarized tree with bstrp support for each node
+ raxml-ng --support --tree $WD/3_gene_trees/"$dir_value"1_ML/"$gene".raxml.bestTree 
+      --bs-trees $WD/3_gene_trees/"$dir_value"2_bootstrap/"$gene".raxml.bootstraps 
+      --seed 2 --threads 2 --prefix $WD/3_gene_trees/"$dir_value"3_support/"$gene" 
+      --redo
+      
 done < $WD/genelist_7575.txt
 
-#reorganize if necessary
-
-# collapse branches
+###### collapse branches #########
 while read gene;
-do nw_ed $WD/3_gene_trees/"$dir_value"3_support/"$gene".raxml.support 'i & (b<=10)' o > $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.bst_coll"; #collapse all branches with bootstrap <10 #with newick utilities
-Rscript $GWD/scripts/1_phylo_reconstruction/3.1_collapse_low_brnlen.R $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.bst_coll" $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.coll" #collapse all branches with low branchlength (< 0.00001)
+do 
+
+#collapse all branches with bootstrap <10 #with newick utilities
+nw_ed $WD/3_gene_trees/"$dir_value"3_support/"$gene".raxml.support 'i & (b<=10)' 
+   o > $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.bst_coll"; 
+   
+#collapse all branches with low branchlength (< 0.00001)
+Rscript $GWD/scripts/1_phylo_reconstruction/3.1_collapse_low_brnlen.R 
+  #input of ML tree (support collapsed)
+  $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.bst_coll" )
+  #input of ML tree (support & brnlen collapsed)
+  $WD/3_gene_trees/"$dir_value"4_collapsed/"$gene.raxml.support.coll" 
 done < $WD/genelist_7575.txt
 
 
 #combine all RAxML genetrees with support into one file for later use in astral
-cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll > $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll
+cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll > 
+  $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll
 
 cd $GWD
 
@@ -100,7 +126,10 @@ cd $GWD
 ######################
 
 for gene_tree in $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll;
-do Rscript $GWD/scripts/general/change_tiplabels.R $gene_tree $gene_tree"_lab" $WD/input_reads_and_info/tags_indiv.txt;
+do Rscript $GWD/scripts/general/change_tiplabels.R 
+  $gene_tree #input
+  $gene_tree"_lab" #output
+  $WD/input_reads_and_info/tags_indiv.txt; #list of which TAG label corresponds to which individual
 done
 
 
@@ -119,7 +148,12 @@ do Rscript $GWD/scripts/general/root_tree.R $gene_tree $gene_tree"_rooted" $outg
 done 
 
 #combine all rooted RAxML genetrees with support into one file (needed for phypartpiechart)
-cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll_rooted > $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll_rooted #for unlabeled
 
-cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll_lab_rooted > $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll_lab_rooted #for labeled
+  #for unlabeled rooted trees
+  cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll_rooted > 
+     $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll_rooted 
+     
+  #for labeled rooted trees
+  cat $WD/3_gene_trees/"$dir_value"4_collapsed/*.raxml.support.coll_lab_rooted > 
+     $WD/3_gene_trees/"$dir_value"4_collapsed/all_genes.raxml.support.coll_lab_rooted 
 
