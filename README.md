@@ -1,7 +1,7 @@
 # Colonization and diversification history of Madagascan palms with new phylogenomic evidence from the genus *Orania* (Arecaceae)
 
 
-This repository contains all scripts and supplementary material generated during the preparation of my Master's thesis. The file `Master_Thesis_Maya_Schrodl.pdf` contains the submitted .pdf version of this Master's thesis. If you have any questions regarding the thesis or the scripts, feel free to contact me: [maya.schroedl@bios.au.dk](mailto:maya.schroedl@bios.au.dk)
+This repository contains all scripts and supplementary material generated during the preparation of my Master's thesis. The file `Master_Thesis_Maya_Schrodl.pdf` contains the submitted .pdf version of this Master's thesis. If you have any questions regarding the thesis or the scripts, feel free to contact me: [maya.schroedl@bios.au.dk](mailto:mayaannikaschroedl@gmail.com)
 
 
 This thesis mainly dealt with understanding colonization and diversification patterns in Madagascan palms using phylogenomics. It is structured in three parts: Part A, B, and C (see below for description of each part). Part A was just a general introduction and did therefore inlude no scripts.
